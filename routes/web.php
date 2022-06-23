@@ -22,9 +22,7 @@ use App\Http\Controllers\TransaksiController;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+
 
 Auth::routes();
 
