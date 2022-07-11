@@ -22,22 +22,6 @@
             <h3 class="h4">Dashboard</h3>
             <p class="mb-0">Your web analytics dashboard template.</p>
         </div>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <form action="{{ route('daftar') }}" method="POST">
-                @csrf
-                <input type="hidden" name="username" value="{{ $member->username }}">
-                <input type="hidden" name="id" value="{{ $member->id }}">
-                <button class="btn btn-sm btn-gray-800 d-inline-flex align-items-center keychainify-checked" type="submit">
-                    <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                        </path>
-                    </svg>
-                    Buat pinjaman
-                </button>
-            </form>
-        </div>
     </div>
     {{-- <div class="table-settings mb-4">
         <div class="row align-items-center justify-content-between">
@@ -162,7 +146,25 @@
                                 class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
                             <h4 class="h3">{{ $member->username }}</h4>
 
-                            <a class="btn btn-sm btn-secondary keychainify-checked" href="#">Send Message</a>
+                            {{-- <a class="btn btn-sm btn-secondary keychainify-checked" href="#">Send Message</a> --}}
+                            <div class="btn btn-sm mt-3">
+                                <form action="{{ route('daftar') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="username" value="{{ $member->username }}">
+                                    <input type="hidden" name="id" value="{{ $member->id }}">
+                                    <button
+                                        class="btn btn-sm btn-gray-800 d-inline-flex align-items-center keychainify-checked"
+                                        type="submit">
+                                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                            </path>
+                                        </svg>
+                                        Buat pinjaman
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -105,7 +105,8 @@
                                             Kembali</button>
                                     </form>
                                 @else
-                                    <a href="#" class="btn btn-link">periksa</a>
+                                    <a href="{{ route('barang.show', $transaksi->barang->id) }}"
+                                        class="btn btn-link">periksa</a>
                                 @endif
                             </div>
                         </td>
