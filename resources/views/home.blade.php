@@ -1,226 +1,274 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
-        <div class="d-block mb-4 mb-md-0">
-            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                    <li class="breadcrumb-item">
-                        <a href="#" class="keychainify-checked">
-                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                                </path>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Transactions</li>
-                </ol>
-            </nav>
-            <h3 class="h4">Dashboard</h3>
-            <p class="mb-0">Your web analytics dashboard template.</p>
-        </div>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="#" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center keychainify-checked">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                    </path>
-                </svg>
-                New Plan
-            </a>
-        </div>
-    </div>
-    <div class="table-settings mb-4">
-        <div class="row align-items-center justify-content-between">
-            <div class="col col-md-6 col-lg-3 col-xl-4">
-                <div class="input-group me-2 me-lg-3 fmxw-400">
-                    <span class="input-group-text">
-                        <svg class="icon icon-xs" x-description="Heroicon name: solid/search"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </span>
-                    <input type="text" class="form-control" placeholder="Search orders">
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Users</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    2,300
+                                    <span class="text-success text-sm font-weight-bolder">+3%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-                <div class="dropdown">
-                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="visually-hidden">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0">
-                        <span class="small ps-3 fw-bold text-dark">Show</span>
-                        <a class="dropdown-item d-flex align-items-center fw-bold keychainify-checked" href="#">10
-                            <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg></a>
-                        <a class="dropdown-item fw-bold keychainify-checked" href="#">20</a>
-                        <a class="dropdown-item fw-bold rounded-bottom keychainify-checked" href="#">30</a>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Users</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    2,300
+                                    <span class="text-success text-sm font-weight-bolder">+3%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">New Clients</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    +3,462
+                                    <span class="text-danger text-sm font-weight-bolder">-2%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Sales</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    $103,430
+                                    <span class="text-success text-sm font-weight-bolder">+5%</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="card card-body border-0 shadow table-wrapper table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th class="border-gray-200">#</th>
-                    <th class="border-gray-200">Bill For</th>
-                    <th class="border-gray-200">Issue Date</th>
-                    <th class="border-gray-200">Due Date</th>
-                    <th class="border-gray-200">Total</th>
-                    <th class="border-gray-200">Status</th>
-                    <th class="border-gray-200">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Item -->
-                <tr>
-                    <td>
-                        <a href="#" class="fw-bold keychainify-checked">
-                            456478
-                        </a>
-                    </td>
-                    <td>
-                        <span class="fw-normal">Platinum Subscription Plan</span>
-                    </td>
-                    <td><span class="fw-normal">1 May 2020</span></td>
-                    <td><span class="fw-normal">1 Jun 2020</span></td>
-                    <td><span class="fw-bold">$799,00</span></td>
-                    <td><span class="fw-bold text-warning">Due</span></td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="icon icon-sm">
-                                    <span class="fas fa-ellipsis-h icon-dark"></span>
-                                </span>
-                                <span class="visually-hidden">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu py-0">
-                                <a class="dropdown-item rounded-top keychainify-checked" href="#"><span
-                                        class="fas fa-eye me-2"></span>View Details</a>
-                                <a class="dropdown-item keychainify-checked" href="#"><span
-                                        class="fas fa-edit me-2"></span>Edit</a>
-                                <a class="dropdown-item text-danger rounded-bottom keychainify-checked"
-                                    href="#"><span class="fas fa-trash-alt me-2"></span>Remove</a>
+</div>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header pb-0 p-3">
+                        <div class="row">
+                            <div class="col-6 d-flex align-items-center">
+                                <h6 class="mb-0">Payment Method</h6>
+                            </div>
+                            <div class="col-6 text-end">
+                                <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i
+                                        class="fas fa-plus"></i>&nbsp;&nbsp;Add New Card</a>
                             </div>
                         </div>
-                    </td>
-                </tr>
-                <!-- Item -->
-                <tr>
-                    <td>
-                        <a href="#" class="fw-bold keychainify-checked">
-                            453673
-                        </a>
-                    </td>
-                    <td>
-                        <span class="fw-normal">Gold Subscription Plan</span>
-                    </td>
-                    <td><span class="fw-normal">1 Oct 2019</span></td>
-                    <td><span class="fw-normal">1 Nov 2019</span></td>
-                    <td><span class="fw-bold">$533,42</span></td>
-                    <td><span class="fw-bold text-danger">Cancelled</span></td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="icon icon-sm">
-                                    <span class="fas fa-ellipsis-h icon-dark"></span>
-                                </span>
-                                <span class="visually-hidden">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu py-0">
-                                <a class="dropdown-item rounded-top keychainify-checked" href="#"><span
-                                        class="fas fa-eye me-2"></span>View Details</a>
-                                <a class="dropdown-item keychainify-checked" href="#"><span
-                                        class="fas fa-edit me-2"></span>Edit</a>
-                                <a class="dropdown-item text-danger rounded-bottom keychainify-checked"
-                                    href="#"><span class="fas fa-trash-alt me-2"></span>Remove</a>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-md-0 mb-4">
+                                <div
+                                    class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                                    <img class="w-10 me-3 mb-0" src="../assets/img/logos/mastercard.png" alt="logo">
+                                    <h6 class="mb-0">
+                                        ****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;7852</h6>
+                                    <i class="fas fa-pencil-alt ms-auto text-dark cursor-pointer" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Edit Card"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div
+                                    class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                                    <img class="w-10 me-3 mb-0" src="../assets/img/logos/visa.png" alt="logo">
+                                    <h6 class="mb-0">
+                                        ****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                                    <i class="fas fa-pencil-alt ms-auto text-dark cursor-pointer" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Edit Card"></i>
+                                </div>
                             </div>
                         </div>
-                    </td>
-                </tr>
-                <!-- Item -->
-                <tr>
-                    <td>
-                        <a href="#" class="fw-bold keychainify-checked">
-                            456468
-                        </a>
-                    </td>
-                    <td>
-                        <span class="fw-normal">Gold Subscription Plan</span>
-                    </td>
-                    <td><span class="fw-normal">1 Sep 2019</span></td>
-                    <td><span class="fw-normal">1 Oct 2019</span></td>
-                    <td><span class="fw-bold">$533,42</span></td>
-                    <td><span class="fw-bold text-success">Paid</span></td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="icon icon-sm">
-                                    <span class="fas fa-ellipsis-h icon-dark"></span>
-                                </span>
-                                <span class="visually-hidden">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu py-0">
-                                <a class="dropdown-item rounded-top keychainify-checked" href="#"><span
-                                        class="fas fa-eye me-2"></span>View Details</a>
-                                <a class="dropdown-item keychainify-checked" href="#"><span
-                                        class="fas fa-edit me-2"></span>Edit</a>
-                                <a class="dropdown-item text-danger rounded-bottom keychainify-checked"
-                                    href="#"><span class="fas fa-trash-alt me-2"></span>Remove</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header pb-0 px-3">
+                        <h6 class="mb-3">Billing Information</h6>
+                    </div>
+                    <div class="card-body pt-4 p-3">
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-3 text-sm">Oliver Liam</h6>
+                                    <span class="mb-2 text-xs">Company Name: <span
+                                            class="text-dark font-weight-bold ms-sm-2">Viking Burrito</span></span>
+                                    <span class="mb-2 text-xs">Email Address: <span
+                                            class="text-dark ms-sm-2 font-weight-bold">oliver@burrito.com</span></span>
+                                    <span class="text-xs">VAT Number: <span
+                                            class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                                </div>
+                                <div class="ms-auto text-end">
+                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
+                                            class="far fa-trash-alt me-2"></i>Delete</a>
+                                    <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i
+                                            class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-3 text-sm">Lucas Harper</h6>
+                                    <span class="mb-2 text-xs">Company Name: <span
+                                            class="text-dark font-weight-bold ms-sm-2">Stone Tech Zone</span></span>
+                                    <span class="mb-2 text-xs">Email Address: <span
+                                            class="text-dark ms-sm-2 font-weight-bold">lucas@stone-tech.com</span></span>
+                                    <span class="text-xs">VAT Number: <span
+                                            class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                                </div>
+                                <div class="ms-auto text-end">
+                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
+                                            class="far fa-trash-alt me-2"></i>Delete</a>
+                                    <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i
+                                            class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-3 text-sm">Ethan James</h6>
+                                    <span class="mb-2 text-xs">Company Name: <span
+                                            class="text-dark font-weight-bold ms-sm-2">Fiber Notion</span></span>
+                                    <span class="mb-2 text-xs">Email Address: <span
+                                            class="text-dark ms-sm-2 font-weight-bold">ethan@fiber.com</span></span>
+                                    <span class="text-xs">VAT Number: <span
+                                            class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                                </div>
+                                <div class="ms-auto text-end">
+                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
+                                            class="far fa-trash-alt me-2"></i>Delete</a>
+                                    <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i
+                                            class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header pb-0 p-3">
+                        <div class="row">
+                            <div class="col-6 d-flex align-items-center">
+                                <h6 class="mb-0">Invoices</h6>
+                            </div>
+                            <div class="col-6 text-end">
+                                <button class="btn btn-outline-primary btn-sm mb-0">View All</button>
                             </div>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination mb-0">
-                    <li class="page-item">
-                        <a class="page-link keychainify-checked" href="#">Previous</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link keychainify-checked" href="#">1</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link keychainify-checked" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link keychainify-checked" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link keychainify-checked" href="#">4</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link keychainify-checked" href="#">5</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link keychainify-checked" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="fw-normal small mt-4 mt-lg-0">Showing <b>5</b> out of <b>25</b> entries</div>
+                    </div>
+                    <div class="card-body p-3 pb-0">
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-1 text-dark font-weight-bold text-sm">March, 01, 2020</h6>
+                                    <span class="text-xs">#MS-415646</span>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    $180
+                                    <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
+                                            class="fas fa-file-pdf text-lg me-1"></i> PDF</button>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="text-dark mb-1 font-weight-bold text-sm">February, 10, 2021</h6>
+                                    <span class="text-xs">#RV-126749</span>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    $250
+                                    <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
+                                            class="fas fa-file-pdf text-lg me-1"></i> PDF</button>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="text-dark mb-1 font-weight-bold text-sm">April, 05, 2020</h6>
+                                    <span class="text-xs">#FB-212562</span>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    $560
+                                    <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
+                                            class="fas fa-file-pdf text-lg me-1"></i> PDF</button>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="text-dark mb-1 font-weight-bold text-sm">June, 25, 2019</h6>
+                                    <span class="text-xs">#QW-103578</span>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    $120
+                                    <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
+                                            class="fas fa-file-pdf text-lg me-1"></i> PDF</button>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="text-dark mb-1 font-weight-bold text-sm">March, 01, 2019</h6>
+                                    <span class="text-xs">#AR-803481</span>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    $300
+                                    <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
+                                            class="fas fa-file-pdf text-lg me-1"></i> PDF</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

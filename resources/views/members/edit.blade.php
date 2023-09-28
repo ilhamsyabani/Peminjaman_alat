@@ -22,72 +22,19 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Transactions</li>
+                    <li class="breadcrumb-item active" aria-current="page">Member</li>
                 </ol>
             </nav>
-            <h3 class="h4">Dashboard</h3>
-            <p class="mb-0">Your web analytics dashboard template.</p>
+            <h3 class="h4">Member</h3>
+            <p class="mb-0">Pengelolaan data anggota</p>
         </div>
-        {{-- <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="#" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center keychainify-checked">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                    </path>
-                </svg>
-                New Plan
-            </a>
-        </div> --}}
     </div>
-    {{-- <div class="table-settings mb-4">
-        <div class="row align-items-center justify-content-between">
-            <div class="col col-md-6 col-lg-3 col-xl-4">
-                <div class="input-group me-2 me-lg-3 fmxw-400">
-                    <span class="input-group-text">
-                        <svg class="icon icon-xs" x-description="Heroicon name: solid/search"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </span>
-                    <input type="text" class="form-control" placeholder="Search orders">
-                </div>
-            </div>
-            <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-                <div class="dropdown">
-                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="visually-hidden">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0">
-                        <span class="small ps-3 fw-bold text-dark">Show</span>
-                        <a class="dropdown-item d-flex align-items-center fw-bold keychainify-checked" href="#">10
-                            <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg></a>
-                        <a class="dropdown-item fw-bold keychainify-checked" href="#">20</a>
-                        <a class="dropdown-item fw-bold rounded-bottom keychainify-checked" href="#">30</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card border-0 shadow components-section">
                 <div class="card-body">
                     <div class="row mb-4">
-                        <form action="{{ route('member.update', $member->id) }}" method="post"
+                        <form action="{{ route('members.update', $member->id) }}" method="post"
                             enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
@@ -104,30 +51,27 @@
                                         onClick="take_snapshot()">
                                     <input type="hidden" name="photo" class="image-tag" value="{{ $member->photo }}">
                                 </div>
-                                {{-- <div class="mb-3">
-                                    <label for="image" class="form-label">Input Gambar Barang</label>
-                                    <input class="form-control @error('image') is-invalid @enderror" type="file"
-                                        id="formFile" name="image">
-                                </div>
-                                @error('image')
-                                    <div class="invalid-feedback"> {{ $message }}</div>
-                                @enderror --}}
-                                <!-- End of Form -->
 
-
-                                <!-- Form -->
                                 <div class="mb-4">
-                                    <label for="username">Nama Member</label>
-                                    <input type="text" class="form-control @error('username') is-invalid @enderror"
-                                        id="username" name="username" aria-describedby="barangHelp"
-                                        value="{{ $member->username }}">
-                                    <small id="username" class="form-text text-muted">kode ID barang yang tertera pada
-                                        label</small>
+                                    <label for="name">Nama Member</label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        id="name" name="name" aria-describedby="barangHelp"
+                                        value="{{ $member->name }}">
+                                    @error('name')
+                                        <div class="invalid-feedback"> {{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('username')
-                                    <div class="invalid-feedback"> {{ $message }}</div>
-                                @enderror
                                 <!-- End of Form -->
+
+                                <div class="mb-4">
+                                    <label for="identity_number">Nomor Identisa</label>
+                                    <input type="text" class="form-control @error('identity_number') is-invalid @enderror"
+                                        id="identity_number" name="identity_number" aria-describedby="barangHelp"  value="{{ $member->identity_number }}">
+                                    <small id="nama" class="form-text text-muted">Nomor identitas</small>
+                                    @error('identity_number')
+                                        <div class="invalid-feedback"> {{ $message }}</div>
+                                    @enderror
+                                </div>
 
                                 <!-- Form -->
                                 <div class="mb-4">
@@ -135,12 +79,11 @@
                                     <input type="text" class="form-control @error('email') is-invalid @enderror"
                                         id="email" name="email" aria-describedby="barangHelp"
                                         value="{{ $member->email }}">
-                                    <small id="email" class="form-text text-muted">email ID barang yang tertera pada
-                                        label</small>
+                                    <small id="email" class="form-text text-muted">email aktif yang biasa digunankan</small>
+                                    @error('email')
+                                        <div class="invalid-feedback"> {{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('email')
-                                    <div class="invalid-feedback"> {{ $message }}</div>
-                                @enderror
                                 <!-- End of Form -->
 
                                 <!-- Form -->
@@ -149,41 +92,28 @@
                                     <input type="text" class="form-control @error('hp') is-invalid @enderror"
                                         id="hp" name="hp" aria-describedby="barangHelp"
                                         value="{{ $member->hp }}">
-                                    <small id="nama" class="form-text text-muted">kode ID barang yang tertera pada
-                                        label</small>
+                                    <small id="nama" class="form-text text-muted">No tephone aktif yang dapat dihubungi</small>
+                                    @error('hp')
+                                        <div class="invalid-feedback"> {{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('hp')
-                                    <div class="invalid-feedback"> {{ $message }}</div>
-                                @enderror
                                 <!-- End of Form -->
 
                                 <!-- Form -->
                                 <div class="my-4">
                                     <label for="alamat">Alamat</label>
                                     <textarea class="form-control" placeholder="Enter your message..." id="textarea" rows="4" spellcheck="false"
-                                        name="alamat">{{ $member->alamat }}</textarea>
+                                        name="address">{{ $member->address }}</textarea>
                                 </div>
                                 <!-- End of Form -->
 
-                                <!-- Form -->
-                                <div class="mb-4">
-                                    <label for="jaminan">Jaminan</label>
-                                    <input type="text" class="form-control @error('jaminan') is-invalid @enderror"
-                                        id="jaminan" name="jaminan" aria-describedby="barangHelp"
-                                        value="{{ $member->jaminan }}">
-                                    <small id="nama" class="form-text text-muted">kode ID barang yang tertera pada
-                                        label</small>
-                                </div>
-                                @error('jaminan')
-                                    <div class="invalid-feedback"> {{ $message }}</div>
-                                @enderror
-                                <!-- End of Form -->
+
 
                                 <!-- Form -->
                                 <div class="my-4">
                                     <label for="keterangan">Keterangan</label>
-                                    <textarea class="form-control" placeholder="Enter your message..." id="textarea" rows="4" spellcheck="false"
-                                        name="keterangan">{{ $member->keterangan }}</textarea>
+                                    <textarea class="form-control" placeholder="" id="textarea" rows="4" spellcheck="false"
+                                        name="keterangan">{{ $member->info }}</textarea>
                                 </div>
                                 <!-- End of Form -->
 

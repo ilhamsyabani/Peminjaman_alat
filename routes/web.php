@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\LokasiControllers;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransaksiController;
 
@@ -37,8 +38,12 @@ Route::middleware('auth')->group(function () {
     Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
     Route::resource('barang', App\Http\Controllers\BarangController::class);
-    Route::resource('member', App\Http\Controllers\MemberController::class);
+    Route::resource('members', App\Http\Controllers\MemberController::class);
     Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
+    Route::resource('products', ProductController::class);
+    Route::get('dashboard',function (){
+        return view('home');
+    });
 });
 
 Route::get('country-state-city', [App\Http\Controllers\LokasiControllers::class, 'index'])->name('location');

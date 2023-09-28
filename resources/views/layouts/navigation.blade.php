@@ -70,8 +70,8 @@
         </a>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('member.*') ? 'active' : '' }}">
-        <a href="{{ route('member.index') }}" class="nav-link">
+    <li class="nav-item {{ request()->routeIs('members.*') ? 'active' : '' }}">
+        <a href="{{ route('members.index') }}" class="nav-link">
             <span class="sidebar-icon me-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-person-hearts" viewBox="0 0 16 16">

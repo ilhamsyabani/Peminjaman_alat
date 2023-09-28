@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Locker extends Model
+class Cabinet extends Model
 {
     use HasFactory;
 
@@ -14,5 +14,9 @@ class Locker extends Model
     public function room()
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function product(){
+        return $this->hasMany(Product::class);
     }
 }

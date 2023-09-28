@@ -16,14 +16,14 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Member</li>
+                    <li class="breadcrumb-item active" aria-current="page">Barang</li>
                 </ol>
             </nav>
-            <h3 class="h4">Member</h3>
-            <p class="mb-0">Manejemen dan pengelolaan Anggota</p>
+            <h3 class="h4">Barang</h3>
+            <p class="mb-0">Manejemen dan pengelolaan barang.</p>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ route('members.create') }}"
+            <a href="{{ route('products.create') }}"
                 class="btn btn-sm btn-gray-800 d-inline-flex align-items-center keychainify-checked">
                 <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -60,9 +60,6 @@
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-7">
-
-                        </div>
-                        <div class="col-md-5">
                             <div class="input-group me-2 me-lg-3 fmxw-400">
                                 <span class="input-group-text">
                                     <svg class="icon icon-xs" x-description="Heroicon name: solid/search"
@@ -73,8 +70,20 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                 </span>
-                                <input type="text" class="form-control" placeholder="cari data user disini"
+                                <input type="text" class="form-control" placeholder="cari data barang disini"
                                     name="search" value="{{ old('search') ?? '' }}" autofocus id="search">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group me-2 me-lg-3 fmxw-400">
+                                <span class="input-group-text">fiter :
+                                </span>
+                                <select id="filter col" name="filter" class="form-control">
+                                    <option value="all">All</option>
+                                    <option value="category1">Category 1</option>
+                                    <option value="category2">Category 2</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary col">Apply</button>
                             </div>
                         </div>
                     </div>
@@ -85,40 +94,36 @@
         <table class="table mt-4 align-middle">
             <thead>
                 <tr>
-                    <th>Nama</th>
-                    <th>Contact</th>
-                    <th style="max-width: 200px">Alamat</th>
-                    <th>status</th>
+                    <th>@sortablelink('name')</th>
+                    <th>Location @sortablelink('location.name')</th>
+                    <th>Details</th>
+                    <th>@sortablelink('status')</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="member-list">
+            <tbody id="product-list">
                 <!-- Data akan dimuat melalui AJAX -->
-                @foreach ($members as $member)
+                @foreach ($products as $product)
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->image }}"
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->image }}"
                                     style="width: 45px; height: 45px" class="rounded" />
                                 <div class="ms-3">
-                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $member->name }}</p>
-                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $member->identity_number }}</p>
+                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $product->name }}</p>
+                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $product->kode }}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="p-2">
-                            <div class="ms-3">
-                                <p class="fw-bold mb-0" style="font-size:13px">{{ $member->hp }}</p>
-                                <p class="text-muted mb-0" style="font-size: 11px">{{ $member->email }}</p>
-                            </div>
-                        </td>
-                        <td style="font-size:13px">{{ $member->address }}</td>
-                        <td>{{ $member->status }}</td>
+                        <td class="p-2">{{ $product->location->name }}, {{ $product->room->name }},
+                            {{ $product->cabinet->name }}</td>
+                        <td>{{ $product->info }}</td>
+                        <td>{{ $product->status }}</td>
                         <td>
                             <div class="btn-group">
-                                <a class="keychainify-checked p-2" href="{{ route('members.edit', $member) }}"><span
+                                <a class="keychainify-checked p-2" href="{{ route('products.edit', $product) }}"><span
                                         class="fas fa-edit me-2"></span></a>
-                                <form action="{{ route('members.destroy', $member) }}" method="post">
+                                <form action="{{ route('products.destroy', $product) }}" method="post">
                                     @method('delete')
                                     @csrf
                                     <button class="btn btn-link text-danger text-align-center keychainify-checked p-2"
@@ -133,12 +138,12 @@
         </table>
         <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;" class="mt-4 px-2">
 
-            <p class="text-gray-500" style="font-size: 14px;">Menampilkan data ke {{ $members->firstItem() }} hingga
-                {{ $members->lastItem() }}, dari
-                {{ $members->total() }} data</p>
+            <p class="text-gray-500" style="font-size: 14px;">Menampilkan data ke {{ $products->firstItem() }} hingga
+                {{ $products->lastItem() }}, dari
+                {{ $products->total() }} data</p>
 
 
-            {{ $members->links() }}
+            {{ $products->links() }}
 
         </div>
     </div>
@@ -156,7 +161,7 @@
                 console.log(pagination);
 
                 $.ajax({
-                    url: "{{ route('members.index') }}",
+                    url: "{{ route('products.index') }}",
                     type: "GET",
                     data: {
                         pagination: pagination,
@@ -164,7 +169,7 @@
                         filter: filter
                     },
                     success: function(data) {
-                        $('#member-list').html(data);
+                        $('#product-list').html(data);
                     }
                 });
             }

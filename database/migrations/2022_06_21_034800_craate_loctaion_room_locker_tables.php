@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('location_id');
             $table->timestamps();
         });
-        Schema::create('lockers', function (Blueprint $table) {
+        Schema::create('cabinets', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('room_id');

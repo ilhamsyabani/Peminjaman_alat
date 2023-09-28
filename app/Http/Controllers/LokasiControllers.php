@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Validator, Redirect, Response;
-use App\Models\{Location, Room, Locker};
+use App\Models\{Location, Room, Cabinet};
 
 class LokasiControllers extends Controller
 {
@@ -23,7 +23,7 @@ class LokasiControllers extends Controller
     }
     public function getCity(Request $request)
     {
-        $data['cities'] = Locker::where("room_id", $request->state_id)
+        $data['cities'] = Cabinet::where("room_id", $request->state_id)
             ->get(["name", "id"]);
         return response()->json($data);
     }
@@ -78,7 +78,7 @@ class LokasiControllers extends Controller
             'room_id' => 'required'
         ]);
 
-        Locker::create($validations);
+        Cabinet::create($validations);
 
         return redirect()->route('location')
             ->with('success', 'Lemari created successfully.');

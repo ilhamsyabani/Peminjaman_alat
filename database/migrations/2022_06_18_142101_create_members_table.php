@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('photo');
-            $table->string('username');
+            $table->string('name');
+            $table->string('identity_number');
             $table->string('email');
             $table->string('hp');
-            $table->string('alamat');
-            $table->string('jaminan');
-            $table->string('keterangan')->nullable();
+            $table->string('address');
+            $table->string('info')->nullable();
             $table->string('status');
             $table->timestamps();
         });

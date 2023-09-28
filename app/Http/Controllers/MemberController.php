@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MemberController extends Controller
@@ -14,12 +15,29 @@ class MemberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        return view("members.index", [
-            'members' => Member::latest()->filter(request(['search']))->paginate(12)
+        $pagination = $request->query('pagination', 5);
+        $search = $request->query('search', '');
+
+        $membersQuery = Member::query();
+
+        // Apply search filter
+        if ($search) {
+            $membersQuery->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('identity_number', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Paginate the results and append query parameters
+        $members = $membersQuery->paginate($pagination)->appends([
+            'pagination' => $pagination,
+            'search' => $search,
         ]);
+
+        return view('members.index', compact('members'));
     }
 
     /**
@@ -39,9 +57,9 @@ class MemberController extends Controller
      * @param  \App\Http\Requests\StoreMemberRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreMemberRequest $request)
+    public function store(Request $request)
     {
-        //
+    
         $img = $request->photo;
         $folderPath = "uploads/";
 
@@ -57,26 +75,20 @@ class MemberController extends Controller
 
         $validation = $request->validate([
             //'photo' => 'image|file|max:1024',
-            'username' => 'required',
+            'name' => 'required',
+            'identity_number' => 'required',
             'email' => 'required',
             'hp' => 'required',
-            'alamat' => 'required',
-            'jaminan' => 'required',
-            'keterangan' => 'nullable',
+            'address' => 'required',
+            'info' => 'nullable',
             'status' => 'required',
         ]);
 
         $validation['photo'] = $file;
-        //dd($validation);
-
-        // if ($request->file('photo')) {
-        //     $validation['photo'] = $request->file('photo')->store('img-sourece');
-        // }
-
 
         Member::create($validation);
 
-        return redirect()->route('member.index')
+        return redirect()->route('members.index')
             ->with('success', 'Items created successfully.');
     }
 
@@ -111,17 +123,15 @@ class MemberController extends Controller
      * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateMemberRequest $request, Member $member)
+    public function update(Request $request, Member $member)
     {
-
         $validated = $request->validate([
-            'username' => 'required',
+            'name' => 'required',
+            'identity_number' => 'required',
             'email' => 'required',
             'hp' => 'required',
-            'alamat' => 'required',
-            'jaminan' => 'required',
-            'keterangan' => 'nullable',
-            // 'status' => 'required',
+            'address' => 'required',
+            'info' => 'nullable',
         ]);
 
         //dd($validated);
@@ -135,7 +145,7 @@ class MemberController extends Controller
 
         Member::where('id', $member->id)->update($validated);
 
-        return redirect('member')->with('success', 'Data Member has been Updated..!');
+        return redirect('members')->with('success', 'Data Member has been Updated..!');
     }
 
     /**
@@ -151,6 +161,6 @@ class MemberController extends Controller
         }
 
         Member::destroy($member->id);
-        return  redirect()->route('member.index')->with('success', 'Item deleted successfully');
+        return  redirect()->route('members.index')->with('success', 'Item deleted successfully');
     }
 }
