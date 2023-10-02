@@ -37,6 +37,11 @@ class Product extends Model
         return $this->belongsTo(Transaksi::class);
     }
 
+    public function transactionItem()
+    {
+        return $this->hasMany(transactionItem::class);
+    }
+
     public function location()
     {
         return $this->belongsTo(Location::class);

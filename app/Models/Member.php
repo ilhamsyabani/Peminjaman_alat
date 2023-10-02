@@ -13,7 +13,7 @@ class Member extends Model
 
     public function transaction()
     {
-        return $this->hasMany(Transaksi::class);
+        return $this->hasMany(Transaction::class);
     }
 
     public function scopeFilter($query, array $filters)

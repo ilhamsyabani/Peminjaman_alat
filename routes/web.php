@@ -10,6 +10,8 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\LokasiControllers;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransaksiController;
 
 /*
@@ -37,13 +39,23 @@ Route::middleware('auth')->group(function () {
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
-    Route::resource('barang', App\Http\Controllers\BarangController::class);
     Route::resource('members', App\Http\Controllers\MemberController::class);
-    Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
     Route::resource('products', ProductController::class);
-    Route::get('dashboard',function (){
-        return view('home');
-    });
+    Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('dashboard', [TransactionController::class, 'create'])->name('transactions.create');
+    Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::get('transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.view');
+    Route::post('transactions/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
+    Route::post('/transactions/return-product', [TransactionController::class, 'kembalikanbarang'])->name('transactions.return.product');
+    Route::post('/transactions/return', [TransactionController::class, 'kembalikan'])->name('transactions.return');
+
+    Route::get('report/transaction', [ReportController::class, 'transaction'])->name('report.transaction');
+    Route::get('report/member', [ReportController::class, 'member'])->name('report.member');
+
+    // Route::get('/',function (){
+    //     return view('test');
+    // });
+
 });
 
 Route::get('country-state-city', [App\Http\Controllers\LokasiControllers::class, 'index'])->name('location');
@@ -56,3 +68,9 @@ Route::post('/locker', [App\Http\Controllers\LokasiControllers::class, 'storeloc
 
 Route::post('sendsesion', [App\Http\Controllers\TransaksiController::class, 'send'])->name('daftar');
 Route::post('kembali', [App\Http\Controllers\TransaksiController::class, 'kembali'])->name('kembali');
+
+Route::get('/search-no-result', [TransactionController::class, 'nosewarch']);
+Route::get('/search-member', [TransactionController::class, 'searchmember']);
+Route::get('/search-product', [TransactionController::class, 'searchproduct']);
+Route::post('/processmember', [TransactionController::class, 'processmember']);
+Route::post('/processproduct', [TransactionController::class, 'processproduct']);
