@@ -16,11 +16,11 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">transaction</li>
+                    <li class="breadcrumb-item active" aria-current="page">Laporan</li>
                 </ol>
             </nav>
-            <h3 class="h4">transaction</h3>
-            <p class="mb-0">Manejemen dan pengelolaan Anggota</p>
+            <h3 class="h4">Laporan transaksi</h3>
+            <p class="mb-0">Daftar trasaksi di lap TP</p>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('transactions.create') }}"

@@ -2,17 +2,11 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Routing\RouteRegistrar;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\MemberController;
-use App\Http\Controllers\LokasiControllers;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\TransaksiController;
+use App\Models\Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +23,6 @@ use App\Http\Controllers\TransaksiController;
 
 Auth::routes();
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
@@ -41,6 +34,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('members', App\Http\Controllers\MemberController::class);
     Route::resource('products', ProductController::class);
+    Route::resource('post', PostController::class );
     Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::get('dashboard', [TransactionController::class, 'create'])->name('transactions.create');
     Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.store');
@@ -51,12 +45,29 @@ Route::middleware('auth')->group(function () {
 
     Route::get('report/transaction', [ReportController::class, 'transaction'])->name('report.transaction');
     Route::get('report/member', [ReportController::class, 'member'])->name('report.member');
-
-    // Route::get('/',function (){
-    //     return view('test');
-    // });
+    Route::get('report/member/{member}', [ReportController::class, 'memberdetail'])->name('report.member-detail');
+    Route::get('report/product', [ReportController::class, 'product'])->name('report.product');
 
 });
+
+Route::get('/', function(){
+    return view('welcome', [
+        'posts' => Post::paginate(9),
+    ]);
+});
+
+Route::get('blog/{post}', function(Post $post) {
+    $nextPost = Post::where('id', '>', $post->id)->first();
+    $previousPost = Post::where('id', '<', $post->id)->orderBy('id', 'desc')->first();
+    return view('blog', compact('post', 'nextPost', 'previousPost'));
+})->name('blog.post');
+
+Route::get('daftar', function(){
+    return view('auth.register');
+})->name('daftar');
+
+
+
 
 Route::get('country-state-city', [App\Http\Controllers\LokasiControllers::class, 'index'])->name('location');
 Route::post('get-states-by-country', [App\Http\Controllers\LokasiControllers::class, 'getState']);
@@ -65,9 +76,6 @@ Route::post('get-cities-by-state', [App\Http\Controllers\LokasiControllers::clas
 Route::post('/location', [App\Http\Controllers\LokasiControllers::class, 'storeloc'])->name('simpan.lokasi');
 Route::post('/room', [App\Http\Controllers\LokasiControllers::class, 'storeroom'])->name('simpan.ruang');
 Route::post('/locker', [App\Http\Controllers\LokasiControllers::class, 'storelocker'])->name('simpan.lemari');
-
-Route::post('sendsesion', [App\Http\Controllers\TransaksiController::class, 'send'])->name('daftar');
-Route::post('kembali', [App\Http\Controllers\TransaksiController::class, 'kembali'])->name('kembali');
 
 Route::get('/search-no-result', [TransactionController::class, 'nosewarch']);
 Route::get('/search-member', [TransactionController::class, 'searchmember']);

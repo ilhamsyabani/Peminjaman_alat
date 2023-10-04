@@ -17,10 +17,10 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Transactions</li>
+                    <li class="breadcrumb-item active" aria-current="page">Lokasi</li>
                 </ol>
             </nav>
-            <h3 class="h4">Dashboard</h3>
+            <h3 class="h4">Lokasi</h3>
             <p class="mb-0">Lokasi Penyimpanan Barang</p>
         </div>
     </div>
@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="country">lokasi</label>
                         <select class="form-select" id="country-dropdown">
-                            <option value="">Select Country</option>
+                            <option value="">Pilih Lokasi</option>
                             @foreach ($countries as $country)
                                 <option value="{{ $country->id }}">
                                     {{ $country->name }}
@@ -209,13 +209,13 @@
                     },
                     dataType: 'json',
                     success: function(result) {
-                        $('#state-dropdown').html('<option value="">Select State</option>');
+                        $('#state-dropdown').html('<option value="">Pilih Ruangan</option>');
                         $.each(result.states, function(key, value) {
                             $("#state-dropdown").append('<option value="' + value.id +
                                 '">' + value.name + '</option>');
                         });
                         $('#city-dropdown').html(
-                            '<option value="">Select State First</option>');
+                            '<option value="">Piling Lemari</option>');
                     }
                 });
             });
@@ -231,7 +231,7 @@
                     },
                     dataType: 'json',
                     success: function(result) {
-                        $('#city-dropdown').html('<option value="">Select City</option>');
+                        $('#city-dropdown').html('<option value="">Pilih Lemari</option>');
                         $.each(result.cities, function(key, value) {
                             $("#city-dropdown").append('<option value="' + value.id +
                                 '">' + value.name + '</option>');

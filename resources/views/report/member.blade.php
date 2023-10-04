@@ -16,11 +16,11 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Member</li>
+                    <li class="breadcrumb-item active" aria-current="page">Laporan</li>
                 </ol>
             </nav>
-            <h3 class="h4">Member</h3>
-            <p class="mb-0">Manejemen dan pengelolaan Anggota</p>
+            <h3 class="h4">Laporan Member</h3>
+            <p class="mb-0">Laporan peminjam</p>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('members.create') }}"
@@ -74,7 +74,7 @@
                                     </svg>
                                 </span>
                                 <input type="text" class="form-control" placeholder="cari data user disini"
-                                    name="search" value="{{ old('search') ?? '' }}" autofocus id="search">
+                                    name="search" value="{{  old('search') ?? '' }}" autofocus id="search">
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                         <td>{{ $member->status }}</td>
                         <td>
                             <div class="btn-group">
-                                <a class="keychainify-checked p-2" href="{{ route('members.edit', $member) }}">view</a>
+                                <a class="keychainify-checked p-2" href="{{ route('report.member-detail', $member) }}">view</a>
                             </div>
                         </td>
                     </tr>

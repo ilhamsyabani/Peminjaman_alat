@@ -1,47 +1,12 @@
 <ul class="nav flex-column pt-3 pt-md-0">
     <li class="nav-item">
-        <a href="{{ route('home') }}" class="nav-link d-flex align-items-center">
+        <a href="{{ route('transactions.create') }}" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon me-3">
                 <img src="{{ asset('images/brand/light.svg') }}" height="20" width="20" alt="Volt Logo">
             </span>
             <span class="mt-1 ms-1 sidebar-text">
-                Volt Laravel
+                Pinjam di LAP
             </span>
-        </a>
-    </li>
-
-    {{-- <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
-        <a href="{{ route('home') }}" class="nav-link">
-            <span class="sidebar-icon">
-                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                </svg>
-            </span>
-            <span class="sidebar-text">{{ __('Dashboard') }}</span>
-        </a>
-    </li> --}}
-
-    {{-- <li class="nav-item {{ request()->routeIs('about') ? 'active' : '' }}">
-        <a href="{{ route('about') }}" class="nav-link">
-            <span class="sidebar-icon">
-                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                </svg>
-            </span>
-            <span class="sidebar-text">{{ __('About us') }}</span>
-        </a>
-    </li> --}}
-
-    <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
-        <a href="{{ route('users.index') }}" class="nav-link">
-            <span class="sidebar-icon me-3">
-                <i class="fas fa-user-alt fa-fw"></i>
-            </span>
-            <span class="sidebar-text">{{ __('Admin') }}</span>
         </a>
     </li>
 
@@ -118,26 +83,46 @@
                 </svg>
             </span>
         </span>
-        <div class="multi-level collapse {{ in_array(Request::segment(1), ['transaction', 'member', 'product']) ? 'show' : '' }}"
+        <div class="multi-level collapse {{ request()->routeIs('report.transaction', 'report.member', 'report.product') ? 'show' : '' }}"
             role="list" id="submenu-components" aria-expanded="false">
             <ul class="flex-column nav">
-                <li class="nav-item {{ Request::segment(1) == 'transaction' ? 'active' : '' }}">
+                <li class="nav-item {{ request()->routeIs('report.transaction') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('report.transaction') }}">
                         <span class="sidebar-text">Transaksi</span>
                     </a>
                 </li>
-                <li class="nav-item {{ Request::segment(1) == 'member' ? 'active' : '' }}">
+                <li class="nav-item {{ request()->routeIs('report.member') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('report.member') }}">
                         <span class="sidebar-text">Member</span>
                     </a>
                 </li>
-                <li class="nav-item {{ Request::segment(1) == 'product' ? 'active' : '' }}">
-                    <a class="nav-link" href="/product">
+                <li class="nav-item {{ request()->routeIs('report.product') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('report.product') }}">
                         <span class="sidebar-text">Barang</span>
                     </a>
                 </li>
             </ul>
-        </div>
+        </div>        
+    </li> 
+    <li class="nav-item {{ request()->routeIs('post.*') ? 'active' : '' }}">
+        <a href="{{ route('post.index') }}" class="nav-link">
+            <span class="sidebar-icon me-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-calendar2-week-fill" viewBox="0 0 16 16">
+                    <path
+                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zM8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM3 10.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
+                </svg>
+            </span>
+            <span class="sidebar-text">{{ __('Post') }}</span>
+        </a>
     </li>
-    
+
+    <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
+        <a href="{{ route('users.index') }}" class="nav-link">
+            <span class="sidebar-icon me-3">
+                <i class="fas fa-user-alt fa-fw"></i>
+            </span>
+            <span class="sidebar-text">{{ __('Admin') }}</span>
+        </a>
+    </li>
 </ul>
