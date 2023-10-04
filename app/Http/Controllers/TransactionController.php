@@ -106,10 +106,17 @@ class TransactionController extends Controller
      */
     public function create()
     {
+        $data['user'] = Member::count();
+        $data['transaksi'] =Transaction::count();
+        $data['peminjaman'] =Transaction::where('status', 'disetujui')->get()->count();
+        $data['barang'] =Product::count();
+
+       
+
         $member = Member::where('status', 'process')->first();
         $products = Product::where('status', 'process')->get();
 
-        return view('home', ['member' => $member, 'products' => $products]);
+        return view('home', ['member' => $member, 'products' => $products, 'data'=>$data]);
     }
 
     /**
