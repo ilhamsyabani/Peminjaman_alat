@@ -7,6 +7,29 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Clone Laravel GitHub Repository
+This is a step-by-step guide for cloning a Laravel project from your GitHub repository.
+<ol>
+    <li><strong>Open Terminal or Command Prompt</strong>: Open the terminal or command prompt on your system.</li>
+    <li><strong>Choose Destination Directory</strong>: Choose the directory where you want to store your Laravel project. Use the <code>cd</code> command to navigate to that directory. For example:
+        <pre><code>cd /path/to/destination/folder</code></pre>
+    </li>
+    <li><strong>Clone the Repository</strong>: Use the following command to clone the repository from your GitHub account:
+            <pre><code>git clone https://github.com/ilhamsyabani/Peminjaman_alat.git</code></pre>
+    </li>
+    <li><strong>Go to Project Directory</strong>: Use the <code>cd</code> command to enter the cloned project directory. For example:
+            <pre><code>cd Peminjaman_alat</code></pre>
+    </li>
+    <li><strong>Install Dependencies</strong>: Run the <code>composer install</code> command to install Laravel project dependencies.</li>
+    <li><strong>Create .env File</strong>: Copy the <code>.env.example</code> file to create a new <code>.env</code> file and configure it with your database settings and other preferences.</li>
+    <li><strong>Generate Application Key</strong>: Run the <code>php artisan key:generate</code> command to generate the application key.</li>
+    <li><strong>Migrate the Database</strong>: Run the <code>php artisan migrate</code> command to execute migrations and create necessary tables in the database.</li>
+    <li><strong>Done!</strong> Your Laravel project has been successfully cloned and installed.</li>
+    </ol>
+    <p>
+        Now, you can start developing your Laravel project locally on your system. Happy coding!
+    </p>
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
