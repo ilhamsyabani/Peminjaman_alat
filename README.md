@@ -15,11 +15,10 @@ This is a step-by-step guide for cloning a Laravel project from your GitHub repo
         <pre><code>cd /path/to/destination/folder</code></pre>
     </li>
     <li><strong>Clone the Repository</strong>: Use the following command to clone the repository from your GitHub account:
-            <pre><code>git clone GITHUB-REPOSITORY-URL</code></pre>
-            Replace <code>GITHUB-REPOSITORY-URL</code> with the HTTPS or SSH URL of your GitHub repository.
+            <pre><code>git clone https://github.com/ilhamsyabani/Peminjaman_alat.git</code></pre>
     </li>
     <li><strong>Go to Project Directory</strong>: Use the <code>cd</code> command to enter the cloned project directory. For example:
-            <pre><code>cd your-project-name</code></pre>
+            <pre><code>cd Peminjaman_alat</code></pre>
     </li>
     <li><strong>Install Dependencies</strong>: Run the <code>composer install</code> command to install Laravel project dependencies.</li>
     <li><strong>Create .env File</strong>: Copy the <code>.env.example</code> file to create a new <code>.env</code> file and configure it with your database settings and other preferences.</li>
