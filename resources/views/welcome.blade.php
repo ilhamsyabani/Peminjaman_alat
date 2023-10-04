@@ -15,7 +15,7 @@
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <img src="assets/images/phone-copy.png" width="468px" alt="about" class="img-fluid">
+                        <img src="{{ asset('assets/images/phone-copy.png') }}" width="468px" alt="about" class="img-fluid">
                     </div>
                 </div>
             </div>
