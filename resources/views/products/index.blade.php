@@ -111,12 +111,12 @@
                                     style="width: 45px; height: 45px" class="rounded" />
                                 <div class="ms-3">
                                     <p class="fw-bold mb-0" style="font-size:13px">{{ $product->name }}</p>
-                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $product->kode }}</p>
+                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $product->code }}</p>
                                 </div>
                             </div>
                         </td>
                         <td class="p-2">{{ $product->location->name }}, {{ $product->room->name }},
-                            {{ $product->cabinet->name }}</td>
+                            {{ $product->cabinet?->name ?? '—' }}</td>
                         <td>{{ $product->info }}</td>
                         <td>{{ $product->status }}</td>
                         <td>

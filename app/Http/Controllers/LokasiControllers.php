@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Validator, Redirect, Response;
 use App\Models\{Location, Room, Cabinet};
 
 class LokasiControllers extends Controller
 {
-    //
     public function index()
     {
         $data['rooms'] = Room::get(["name", "id"]);
@@ -41,28 +39,11 @@ class LokasiControllers extends Controller
     }
 
 
-    public function editloc(Location $location)
-    {
-        return view('locations.editloc', ['location' => $location]);
-    }
-
-    public function updateloc(Request $request, Location $location)
-    {
-        $rules = [
-            'name' => 'required',
-        ];
-
-        $validated = $request->validate($rules);
-
-        Location::where('id', $location->id)->update($validated);
-    }
-
     public function storeroom(Request $request)
     {
-        //dd($request);
         $validations = $request->validate([
             'name' => 'required',
-            'location_id' => 'required'
+            'location_id' => 'required|integer|exists:locations,id'
         ]);
 
         Room::create($validations);
@@ -75,7 +56,7 @@ class LokasiControllers extends Controller
     {
         $validations = $request->validate([
             'name' => 'required',
-            'room_id' => 'required'
+            'room_id' => 'required|integer|exists:rooms,id'
         ]);
 
         Cabinet::create($validations);

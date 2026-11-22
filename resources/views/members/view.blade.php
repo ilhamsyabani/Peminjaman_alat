@@ -79,7 +79,7 @@
                         </div>
                         <div class="col-md-8 mb-2">
                             <div>
-                                <span>{{ $member->username }}</span>
+                                <span>{{ $member->name }}</span>
                             </div>
                         </div>
                         <div class="col-md-4 mb-2">
@@ -109,7 +109,7 @@
                         </div>
                         <div class="col-md-8 mb-2">
                             <div>
-                                <span>{{ $member->alamat }}</span>
+                                <span>{{ $member->address }}</span>
                             </div>
                         </div>
                     </div>
@@ -121,13 +121,13 @@
                         </div>
                         <div class="col-md-8 mb-2">
                             <div>
-                                <span>{{ $member->jaminan }}</span>
+                                <span>{{ $member->transaction()->latest()->first()?->collateral ?? '—' }}</span>
                             </div>
                         </div>
                     </div>
 
                     <h2 class="h5 my-2">Keterangan</h2>
-                    <p><span>{{ $member->keterangan }}</span></p>
+                    <p><span>{{ $member->info }}</span></p>
 
                     <div class="mt-2">
                         <button type="submit" class="btn btn-gray-800 mt-2 animate-up-2">Edit</button>
@@ -144,13 +144,13 @@
                         <div class="card-body pb-5">
                             <img src="{{ asset('storage/' . $member->photo) }}"
                                 class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
-                            <h4 class="h3">{{ $member->username }}</h4>
+                            <h4 class="h3">{{ $member->name }}</h4>
 
                             {{-- <a class="btn btn-sm btn-secondary keychainify-checked" href="#">Send Message</a> --}}
                             <div class="btn btn-sm mt-3">
-                                <form action="{{ route('daftar') }}" method="POST">
+                                <form action="{{ route('processmember') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="username" value="{{ $member->username }}">
+                                    <input type="hidden" name="status" value="process">
                                     <input type="hidden" name="id" value="{{ $member->id }}">
                                     <button
                                         class="btn btn-sm btn-gray-800 d-inline-flex align-items-center keychainify-checked"

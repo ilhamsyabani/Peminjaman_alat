@@ -102,11 +102,11 @@
                         </td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('storage/' . $transaction->member->photo) }}" alt="{{ $transaction->member->photo }}"
+                                <img src="{{ asset('storage/' . $transaction->member?->photo) }}" alt="{{ $transaction->member?->photo }}"
                                     style="width: 45px; height: 45px" class="rounded" />
                                 <div class="ms-3">
-                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $transaction->member->name }}</p>
-                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $transaction->member->hp }}</p>
+                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $transaction->member?->name }}</p>
+                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $transaction->member?->hp }}</p>
                                 </div>
                             </div>
                         </td>

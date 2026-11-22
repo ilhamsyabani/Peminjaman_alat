@@ -1,4 +1,5 @@
 @extends('blog.layout')
+@inject('postContentSanitizer', 'App\Support\PostContentSanitizer')
 
 @section('content')
     <main class="blog-post">
@@ -12,7 +13,7 @@
             <section class="post-content">
                 <div class="row">
                     <div class="col-lg-9 mx-auto">
-                        {!! $post->content !!}
+                        {!! $postContentSanitizer->sanitize($post->content) !!}
                     </div>
                 </div>
             </section>

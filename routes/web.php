@@ -21,7 +21,7 @@ use App\Models\Post;
 
 
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 
 Route::middleware('auth')->group(function () {
@@ -62,13 +62,12 @@ Route::get('blog/{post}', function(Post $post) {
     return view('blog', compact('post', 'nextPost', 'previousPost'));
 })->name('blog.post');
 
-Route::get('daftar', function(){
-    return view('auth.register');
-})->name('daftar');
+Route::redirect('daftar', 'login')->name('daftar');
 
 
 
 
+Route::middleware('auth')->group(function () {
 Route::get('country-state-city', [App\Http\Controllers\LokasiControllers::class, 'index'])->name('location');
 Route::post('get-states-by-country', [App\Http\Controllers\LokasiControllers::class, 'getState']);
 Route::post('get-cities-by-state', [App\Http\Controllers\LokasiControllers::class, 'getCity']);
@@ -80,5 +79,6 @@ Route::post('/locker', [App\Http\Controllers\LokasiControllers::class, 'storeloc
 Route::get('/search-no-result', [TransactionController::class, 'nosewarch']);
 Route::get('/search-member', [TransactionController::class, 'searchmember']);
 Route::get('/search-product', [TransactionController::class, 'searchproduct']);
-Route::post('/processmember', [TransactionController::class, 'processmember']);
+Route::post('/processmember', [TransactionController::class, 'processmember'])->name('processmember');
 Route::post('/processproduct', [TransactionController::class, 'processproduct']);
+});

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMemberRequest;
-use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class MemberController extends Controller
 {
@@ -18,7 +19,8 @@ class MemberController extends Controller
     public function index(Request $request)
     {
         //
-        $pagination = $request->query('pagination', 5);
+        $pagination = $request->integer('pagination', 5);
+        $pagination = $pagination > 0 ? min($pagination, 100) : 5;
         $search = $request->query('search', '');
 
         $membersQuery = Member::query();
@@ -54,39 +56,43 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreMemberRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-    
-        $img = $request->photo;
-        $folderPath = "uploads/";
-
-        $image_parts = explode(";base64,", $img);
-        $image_type_aux = explode("image/", $image_parts[0]);
-        $image_type = $image_type_aux[1];
-
-        $image_base64 = base64_decode($image_parts[1]);
-        $fileName = uniqid() . '.png';
-
-        $file = $folderPath . $fileName;
-        Storage::put($file, $image_base64);
+        if ($request->input('status') === 'belum meminjam') {
+            $request->merge(['status' => 'tidak_ada']);
+        }
 
         $validation = $request->validate([
-            //'photo' => 'image|file|max:1024',
-            'name' => 'required',
-            'identity_number' => 'required',
-            'email' => 'required',
-            'hp' => 'required',
-            'address' => 'required',
-            'info' => 'nullable',
-            'status' => 'required',
+            'photo' => 'required|string',
+            'name' => 'required|string|max:255',
+            'identity_number' => 'required|string|max:255|unique:members,identity_number',
+            'email' => 'required|email|max:255',
+            'hp' => 'required|string|max:255',
+            'address' => 'required|string',
+            'info' => 'nullable|string',
+            'status' => 'required|in:tidak_ada,process,meminjam',
         ]);
 
-        $validation['photo'] = $file;
+        if (! preg_match('/^data:image\/(png|jpeg|jpg);base64,([A-Za-z0-9+\/=]+)$/', $validation['photo'], $matches)) {
+            throw ValidationException::withMessages(['photo' => 'Format foto tidak valid.']);
+        }
+        $image = base64_decode($matches[2], true);
+        if ($image === false) {
+            throw ValidationException::withMessages(['photo' => 'Format foto tidak valid.']);
+        }
 
-        Member::create($validation);
+        $file = 'uploads/'.Str::random(40).'.png';
+        Storage::put($file, $image);
+        $validation['photo'] = $file;
+        try {
+            Member::create($validation);
+        } catch (\Throwable $exception) {
+            Storage::delete($file);
+            throw $exception;
+        }
 
         return redirect()->route('members.index')
             ->with('success', 'Items created successfully.');
@@ -119,16 +125,20 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateMemberRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Member $member)
     {
+        if (! $request->has('info') && $request->has('keterangan')) {
+            $request->merge(['info' => $request->input('keterangan')]);
+        }
+
         $validated = $request->validate([
             'name' => 'required',
-            'identity_number' => 'required',
-            'email' => 'required',
+            'identity_number' => ['required', 'string', Rule::unique('members', 'identity_number')->ignore($member->id)],
+            'email' => 'required|email',
             'hp' => 'required',
             'address' => 'required',
             'info' => 'nullable',
@@ -156,6 +166,10 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
+        if ($member->transaction()->exists()) {
+            return back()->withErrors(['member' => 'Member yang tercatat dalam transaksi tidak dapat dihapus.']);
+        }
+
         if ($member->photo) {
             Storage::delete($member->photo);
         }

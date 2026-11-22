@@ -195,7 +195,7 @@
                                         <div class="d-flex flex-column px-2">
                                             <h6 class="mb-1 text-dark font-weight-bold text-sm">{{ $product->name }}</h6>
                                             <span class="text-xs" style="font-size:12px">{{ $product->location->name }},
-                                                {{ $product->room->name }}, {{ $product->cabinet->name }}</span>
+                                                {{ $product->room->name }}, {{ $product->cabinet?->name ?? '—' }}</span>
                                         </div>
 
                                     </li>

@@ -1,3 +1,11 @@
+# Aplikasi Peminjaman
+
+Proyek ini menggunakan Laravel 13.43.0. Batas PHP di Composer adalah `^8.3`, sehingga PHP 8.3 sampai 8.6 dapat dipakai. PHP 8.6.0 sudah dirilis; di mesin pengembangan ini pengujian dilakukan dengan PHP 8.5.12 dan binary Herd PHP 8.6.0RC5. Sebelum menggunakan PHP 8.6 stabil pada server, jalankan `composer check-platform-reqs` dan `php artisan test` dengan binary PHP server tersebut.
+
+Untuk instalasi baru: `composer install`, salin `.env.example` ke `.env`, isi koneksi database, jalankan `php artisan key:generate`, lalu `php artisan migrate`. Pengujian memakai SQLite in-memory dan tidak mengubah database yang dikonfigurasi di `.env`.
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">

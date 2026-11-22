@@ -12,17 +12,17 @@
                         <ul class="list-group">
                             <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
                                 <div class="d-flex flex-column px-4 col-3">
-                                    <img src="{{ asset('storage/' . $transaction->member->photo) }}"
-                                        alt="{{ $transaction->member->image }}">
+                                    <img src="{{ asset('storage/' . $transaction->member?->photo) }}"
+                                        alt="{{ $transaction->member?->image }}">
                                 </div>
                                 <div class="d-flex flex-column">
-                                    <h6 style="font-size: 14px;">{{ $transaction->member->name }}</h6>
+                                    <h6 style="font-size: 14px;">{{ $transaction->member?->name }}</h6>
                                     <span style="font-size: 12px;" class="mb-0 text-xs">No handphone: <span
-                                            class="text-dark font-weight-bold ms-sm-2">{{ $transaction->member->hp }}</span></span>
+                                            class="text-dark font-weight-bold ms-sm-2">{{ $transaction->member?->hp }}</span></span>
                                     <span style="font-size: 12px;" class="mb-0 text-xs">Email: <span
-                                            class="text-dark ms-sm-2 font-weight-bold">{{ $transaction->member->email }}</span></span>
+                                            class="text-dark ms-sm-2 font-weight-bold">{{ $transaction->member?->email }}</span></span>
                                     <span style="font-size: 12px;" class="text-xs">Alamat: <span
-                                            class="text-dark ms-sm-2 font-weight-bold">{{ $transaction->member->address }}</span></span>
+                                            class="text-dark ms-sm-2 font-weight-bold">{{ $transaction->member?->address }}</span></span>
                                 </div>
                             </li>
                         </ul>
@@ -38,20 +38,20 @@
                                     class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                     <div class="d-flex">
                                         <div class="d-flex flex-column px-2">
-                                            <img src="{{ asset('storage/' . $item->product->image) }}" style="height:50px"
+                                            <img src="{{ asset('storage/' . $item->product?->image) }}" style="height:50px"
                                                 alt="">
                                         </div>
                                         <div class="d-flex flex-column px-2">
-                                            <h6 class="mb-1 text-dark font-weight-bold text-sm">{{ $item->product->name }}
+                                            <h6 class="mb-1 text-dark font-weight-bold text-sm">{{ $item->product?->name }}
                                             </h6>
                                             <span class="text-xs"
-                                                style="font-size:12px">{{ $item->product->location->name }},
-                                                {{ $item->product->room->name }},
-                                                {{ $item->product->cabinet->name }}</span>
+                                                style="font-size:12px">{{ $item->product?->location?->name }},
+                                                {{ $item->product?->room?->name }},
+                                                {{ $item->product?->cabinet?->name ?? '—' }}</span>
                                         </div>
                                     </div>
                                     <div class="d-flex flex-column px-2">
-                                        @if ($item->status = 'selesai')
+                                        @if ($item->status === 'selesai')
                                             <p>barang sudah dikembalikan</p>
                                         @else
                                             <form action="{{ route('transactions.return.product') }}" method="POST">
@@ -81,9 +81,12 @@
                                     </div>
                                 </div>
                             @else
-                                <input type="hidden" name="id" value="{{ $transaction->id }}">
-                                <button class="btn btn-sm btn-gray-800  align-items-center mt-4" type="submit">Selesaikan
-                                    pinjaman</button>
+                                <form action="{{ route('transactions.return') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $transaction->id }}">
+                                    <button class="btn btn-sm btn-gray-800 align-items-center mt-4" type="submit">Selesaikan
+                                        pinjaman</button>
+                                </form>
                             @endif
                         </div>
                     </div>

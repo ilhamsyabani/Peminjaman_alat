@@ -111,13 +111,11 @@
 
                                 <!-- Form -->
                                 <div class="my-4">
-                                    <label for="keterangan">Keterangan</label>
+                                    <label for="info">Keterangan</label>
                                     <textarea class="form-control" placeholder="" id="textarea" rows="4" spellcheck="false"
-                                        name="keterangan">{{ $member->info }}</textarea>
+                                        name="info">{{ old('info', $member->info) }}</textarea>
                                 </div>
                                 <!-- End of Form -->
-
-                                <input type="hidden" name="status" value="belum meminjam">
 
                                 <div class="my-4 d-inline-flex align-content-end">
                                     <button class="btn btn-sm btn-gray-800 d-inline-flex">simpan</button>

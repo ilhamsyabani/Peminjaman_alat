@@ -89,11 +89,11 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->image }}"
+                                <img src="{{ asset('storage/' . $item->product?->image) }}" alt="{{ $item->image }}"
                                     style="width: 45px; height: 45px" class="rounded" />
                                 <div class="ms-3">
-                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $item->product->name }}</p>
-                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $item->product->kode }}</p>
+                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $item->product?->name }}</p>
+                                    <p class="text-muted mb-0" style="font-size: 11px">{{ $item->product?->code }}</p>
                                 </div>
                             </div>
                         </td>

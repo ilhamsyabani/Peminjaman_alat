@@ -46,14 +46,17 @@
                                     <label for="image" class="form-label">Input Gambar Barang</label>
                                     <input class="btn btn-primary mt-2" type="button" value="Take Snapshot"
                                         onClick="take_snapshot()">
-                                    <input type="hidden" name="photo" class="image-tag">
+                                    <input type="hidden" name="photo" class="image-tag" value="{{ old('photo') }}">
+                                    @error('photo')
+                                        <div class="text-danger small mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <!-- Form -->
                                 <div class="mb-4">
                                     <label for="name">Nama Member</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" name="name" aria-describedby="barangHelp">
+                                        id="name" name="name" aria-describedby="barangHelp" value="{{ old('name') }}">
                                     <small id="name" class="form-text text-muted"></small>
                                 </div>
                                 @error('name')
@@ -65,7 +68,7 @@
                                 <div class="mb-4">
                                     <label for="email">Email Member</label>
                                     <input type="text" class="form-control @error('email') is-invalid @enderror"
-                                        id="email" name="email" aria-describedby="barangHelp">
+                                        id="email" name="email" aria-describedby="barangHelp" value="{{ old('email') }}">
                                     <small id="email" class="form-text text-muted">masukan email yang akatif</small>
                                 </div>
                                 @error('email')
@@ -77,7 +80,7 @@
                                 <div class="mb-4">
                                     <label for="identity_number">Nomor Identisa</label>
                                     <input type="text" class="form-control @error('identity_number') is-invalid @enderror"
-                                        id="identity_number" name="identity_number" aria-describedby="barangHelp">
+                                        id="identity_number" name="identity_number" aria-describedby="barangHelp" value="{{ old('identity_number') }}">
                                     <small id="nama" class="form-text text-muted">Nomor identitas </small>
                                     @error('identity_number')
                                         <div class="invalid-feedback"> {{ $message }}</div>
@@ -89,7 +92,7 @@
                                 <div class="mb-4">
                                     <label for="hp">Nomor Telephone</label>
                                     <input type="text" class="form-control @error('hp') is-invalid @enderror"
-                                        id="hp" name="hp" aria-describedby="barangHelp">
+                                        id="hp" name="hp" aria-describedby="barangHelp" value="{{ old('hp') }}">
                                     <small id="nama" class="form-text text-muted">Gunakan No telfon aktif</small>
                                     @error('hp')
                                         <div class="invalid-feedback"> {{ $message }}</div>
@@ -101,7 +104,7 @@
                                 <div class="my-4">
                                     <label for="address">Alamat</label>
                                     <textarea class="form-control" placeholder="Masukan address lengkap " id="textarea" rows="4" spellcheck="false"
-                                        name="address"></textarea>
+                                        name="address">{{ old('address') }}</textarea>
                                     @error('address')
                                         <div class="invalid-feedback"> {{ $message }}</div>
                                     @enderror
@@ -111,11 +114,17 @@
                                 <div class="my-4">
                                     <label for="info">Informasi tambahan</label>
                                     <textarea class="form-control" placeholder="Informasi terkait pengguna" id="textarea" rows="4"
-                                        spellcheck="false" name="info"></textarea>
+                                        spellcheck="false" name="info">{{ old('info') }}</textarea>
+                                    @error('info')
+                                        <div class="text-danger small mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <!-- End of Form -->
 
-                                <input type="hidden" name="status" value="belum meminjam">
+                                <input type="hidden" name="status" value="tidak_ada">
+                                @error('status')
+                                    <div class="text-danger small mt-2">{{ $message }}</div>
+                                @enderror
 
                                 <div class="my-4 d-inline-flex align-content-end">
                                     <button class="btn btn-sm btn-gray-800 d-inline-flex">simpan</button>

@@ -96,7 +96,7 @@
                         <td>
                             <div class="d-flex">
                                 <div class="">
-                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $transaction->member->name }}</p>
+                                    <p class="fw-bold mb-0" style="font-size:13px">{{ $transaction->member?->name }}</p>
                                     <p class="text-muted mb-0" style="font-size: 11px">{{ $transaction->transaction_date }}
                                     </p>
                                 </div>

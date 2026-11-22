@@ -13,11 +13,11 @@ class Room extends Model
 
     public function lokasi()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(Location::class, 'location_id');
     }
 
     public function lemari()
     {
-        return $this->hasMany(Locker::class);
+        return $this->hasMany(Cabinet::class);
     }
 }

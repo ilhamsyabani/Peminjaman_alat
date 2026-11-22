@@ -52,7 +52,7 @@
                                 <div class="mb-2">
                                     <label for="kode">Kode Barang</label>
                                     <input type="text" class="form-control @error('kode') is-invalid @enderror"
-                                        id="kode" name="kode" aria-describedby="barangHelp" value="{{ old('kode', $product->kode) }}">
+                                        id="kode" name="kode" aria-describedby="barangHelp" value="{{ old('kode', $product->code) }}">
                                     <small id="kode" class="form-text text-muted">kode ID barang yang tertera pada
                                         label</small>
                                         @error('kode')
@@ -127,7 +127,7 @@
                                     <div class="form-group">
                                         <label for="city">Lemari</label>
                                         <select class="form-select" id="city-dropdown" name="cabinet_id">
-                                            <option value="{{ $product->cabinet_id }}" selected>{{  $product->cabinet->name }}</option>
+                                            <option value="{{ $product->locker_id }}" selected>{{  $product->cabinet?->name ?? '—' }}</option>
                                         </select>
                                     </div>
                                 </div>

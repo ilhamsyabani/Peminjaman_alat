@@ -40,8 +40,8 @@ return new class extends Migration
     public function down()
     {
         //
-        Schema::drop('locations');
-        Schema::drop('rooms');
-        Schema::drop('lockers');
+        Schema::dropIfExists('cabinets');
+        Schema::dropIfExists('rooms');
+        Schema::dropIfExists('locations');
     }
 };

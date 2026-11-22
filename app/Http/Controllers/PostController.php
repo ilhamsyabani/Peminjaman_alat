@@ -18,7 +18,8 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $pagination = $request->query('pagination', 5);
+        $pagination = $request->integer('pagination', 5);
+        $pagination = $pagination > 0 ? min($pagination, 100) : 5;
         $search = $request->query('search', '');
 
         $postsQuery = Post::query();
@@ -27,7 +28,7 @@ class PostController extends Controller
         if ($search) {
             $postsQuery->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('identity_number', 'like', '%' . $search . '%');
+                    ->orWhere('category', 'like', '%' . $search . '%');
             });
         }
 
@@ -71,7 +72,7 @@ class PostController extends Controller
         $validatedData['excerpt'] = Str::limit($request->content, 120, '...');
 
         if ($request->file('gambar')) {
-            $validations['gambar'] = $request->file('gambar')->store('img-sourece');
+            $validatedData['gambar'] = $request->file('gambar')->store('img-source');
         }
 
         // Menyimpan data ke dalam tabel posts
@@ -89,9 +90,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('post', [
-            'post' => $post
-        ]);
+        $nextPost = Post::where('id', '>', $post->id)->first();
+        $previousPost = Post::where('id', '<', $post->id)->latest('id')->first();
+
+        return view('blog', compact('post', 'nextPost', 'previousPost'));
     }
 
     /**
@@ -123,8 +125,10 @@ class PostController extends Controller
 
         // Menambahkan data yang tidak validasi ke dalam array
         $validatedData['user_id'] = auth()->user()->id;
-        $validatedData['slug'] = SlugService::createSlug(Post::class, 'slug', $request->title);
-        $validatedData['excerpt'] = Str::limit(strip_tags($request->content, 120, '...'));
+        if ($request->title !== $post->title) {
+            $validatedData['slug'] = SlugService::createSlug(Post::class, 'slug', $request->title);
+        }
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->content), 120, '...');
 
         // Check if a new image is uploaded
         if ($request->hasFile('gambar')) {
@@ -154,7 +158,7 @@ class PostController extends Controller
             Storage::delete($post->gambar);
         }
 
-        post::destroy($post->id);
-        return  redirect()->route('posts.index')->with('success', 'post deleted successfully');
+        $post->delete();
+        return redirect()->route('post.index')->with('success', 'post deleted successfully');
     }
 }

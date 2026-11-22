@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
   public function transaction(Request $request){
-    $pagination = $request->query('pagination', 5);
+    $pagination = $request->integer('pagination', 5);
+    $pagination = $pagination > 0 ? min($pagination, 100) : 5;
         $search = $request->query('search', '');
 
         $transactionQuery = Transaction::query();
@@ -18,7 +19,7 @@ class ReportController extends Controller
         // Apply search filter
         if ($search) {
             $transactionQuery->where(function ($query) use ($search) {
-                $query->where('transactions.member->name', 'like', '%' . $search . '%')
+                $query->whereHas('member', fn ($member) => $member->where('name', 'like', '%' . $search . '%'))
                     ->orWhere('transactions.id', 'like', '%' . $search . '%');
             });
         }
@@ -33,7 +34,8 @@ class ReportController extends Controller
   }
 
   public function member (Request $request){
-    $pagination = $request->query('pagination', 5);
+    $pagination = $request->integer('pagination', 5);
+    $pagination = $pagination > 0 ? min($pagination, 100) : 5;
         $search = $request->query('search', '');
 
         $memberQuery = Member::query();
@@ -62,7 +64,8 @@ class ReportController extends Controller
   }
 
   public function product(Request $request){
-    $pagination = $request->query('pagination', 5);
+    $pagination = $request->integer('pagination', 5);
+    $pagination = $pagination > 0 ? min($pagination, 100) : 5;
         $search = $request->query('search', '');
 
         $itemQuery = TransactionItem::query();

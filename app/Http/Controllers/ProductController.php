@@ -6,6 +6,7 @@ use App\Models\Location;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -14,18 +15,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index(Request $request)
-    // {
-    //     $perPage = $request->input('perPage', 10); 
-    //     return view('products.index',[
-    //         'products' => Product::latest()->filter(request(['search', 'location']))->paginate($perPage),
-    //         'rooms' => Location::all(),
-    //     ]);
-    // }
-
     public function index(Request $request)
     {
-        $pagination = $request->query('pagination', 5);
+        $pagination = $request->integer('pagination', 5);
+        $pagination = $pagination > 0 ? min($pagination, 100) : 5;
         $search = $request->query('search', '');
         $filter = $request->query('filter', 'all');
 
@@ -35,7 +28,7 @@ class ProductController extends Controller
         if ($search) {
             $productsQuery->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('kode', 'like', '%' . $search . '%');
+                    ->orWhere('code', 'like', '%' . $search . '%');
             });
         }
 
@@ -76,17 +69,21 @@ class ProductController extends Controller
     {
         $validations = $request->validate([
             'image' => 'image|file|max:2400',
-            'kode' => 'required|unique:barangs|',
-            'name' => 'required',
-            'status' => 'required',
-            'info' => 'max:225|nullable',
-            'location_id' => 'required',
-            'room_id' => 'required|max:25',
-            'cabinet_id' => 'max:25|nullable',
+            'kode' => ['required', 'string', 'max:255', Rule::unique('products', 'code')],
+            'name' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+            'info' => 'nullable|string|max:225',
+            'location_id' => 'required|integer|exists:locations,id',
+            'room_id' => 'required|integer|exists:rooms,id',
+            'cabinet_id' => 'nullable|integer|exists:cabinets,id',
         ]);
 
+        $validations['code'] = $validations['kode'];
+        $validations['locker_id'] = $validations['cabinet_id'] ?? null;
+        unset($validations['kode'], $validations['cabinet_id']);
+
         if ($request->file('image')) {
-            $validations['image'] = $request->file('image')->store('img-sourece');
+            $validations['image'] = $request->file('image')->store('img-source');
         }
 
         Product::create($validations);
@@ -103,7 +100,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-      
+        return view('products.show', compact('product'));
     }
 
     /**
@@ -131,20 +128,20 @@ class ProductController extends Controller
     {
         $rules = [
             'image' => 'image|file|max:2400',
-            'kode' => 'required|unique:barangs|',
-            'name' => 'required',
-            'status' => 'required',
-            'info' => 'max:225|nullable',
-            'location_id' => 'required',
-            'room_id' => 'required|max:25',
-            'cabinet_id' => 'max:25|nullable',
+            'kode' => ['required', 'string', 'max:255', Rule::unique('products', 'code')->ignore($product->id)],
+            'name' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+            'info' => 'nullable|string|max:225',
+            'location_id' => 'required|integer|exists:locations,id',
+            'room_id' => 'required|integer|exists:rooms,id',
+            'cabinet_id' => 'nullable|integer|exists:cabinets,id',
         ];
 
-        if ($request->kode != $product->kode) {
-            $rules['kode'] = 'requeired|unique:items';
-        }
-
         $validatedItem = $request->validate($rules);
+
+        $validatedItem['code'] = $validatedItem['kode'];
+        $validatedItem['locker_id'] = $validatedItem['cabinet_id'] ?? null;
+        unset($validatedItem['kode'], $validatedItem['cabinet_id']);
 
         if ($request->file('image')) {
             if ($request->oldImg) {
@@ -166,6 +163,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        if ($product->transactionItem()->exists()) {
+            return back()->withErrors(['product' => 'Barang yang tercatat dalam transaksi tidak dapat dihapus.']);
+        }
+
         if ($product->image) {
             Storage::delete($product->image);
         }

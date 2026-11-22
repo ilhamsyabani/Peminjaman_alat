@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\TransactionItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
@@ -41,9 +43,9 @@ class TransactionController extends Controller
 
     public function processmember(Request $request)
     {
-        $member = Member::find($request->id); // Find the member by ID
-        $member->status = $request->status; // Set the status to "process"
-        $member->save(); // Save the updated member status
+        $data = $request->validate(['id' => 'required|integer', 'status' => 'required|in:process,tidak_ada']);
+        $member = Member::findOrFail($data['id']);
+        $member->update(['status' => $data['status']]);
 
 
         return redirect('dashboard')->with('status', 'Profile updated!');
@@ -57,7 +59,7 @@ class TransactionController extends Controller
         $products = Product::where('status', 'tersedia')
             ->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('kode', 'like', '%' . $search . '%');
+                    ->orWhere('code', 'like', '%' . $search . '%');
             })
             ->get();
 
@@ -66,9 +68,11 @@ class TransactionController extends Controller
 
     public function processproduct(Request $request)
     {
-        $product = Product::find($request->id); // Find the product by ID
-        $product->status = "process"; // Set the status to "process"
-        $product->save(); // Save the updated member status
+        $data = $request->validate(['id' => 'required|integer']);
+        $product = Product::findOrFail($data['id']);
+        abort_unless($product->status === 'tersedia', 409);
+        $product->update(['status' => 'process']);
+        $request->session()->push('selected_products', $product->id);
 
 
         return redirect('dashboard')->with('status', 'Profile updated!');
@@ -80,7 +84,8 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
 {
-    $pagination = $request->query('pagination', 5);
+    $pagination = $request->integer('pagination', 5);
+    $pagination = $pagination > 0 ? min($pagination, 100) : 5;
     $search = $request->query('search', '');
 
     // Query untuk mencari transaksi dengan status 'berjalan' dan nama member yang cocok dengan pencarian
@@ -104,7 +109,7 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $data['user'] = Member::count();
         $data['transaksi'] =Transaction::count();
@@ -114,7 +119,8 @@ class TransactionController extends Controller
        
 
         $member = Member::where('status', 'process')->first();
-        $products = Product::where('status', 'process')->get();
+        $products = Product::whereIn('id', $request->session()->get('selected_products', []))
+            ->where('status', 'process')->get();
 
         return view('home', ['member' => $member, 'products' => $products, 'data'=>$data]);
     }
@@ -127,48 +133,42 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'member_id' => 'required|exists:members,id',
-            'products.*' => 'required|exists:products,id',
-            // tambahkan aturan validasi lainnya sesuai kebutuhan Anda
+            'products' => 'required|array|min:1',
+            'products.*' => 'required|integer|distinct|exists:products,id',
         ]);
+        $selected = $request->session()->get('selected_products', []);
+        $transaction = DB::transaction(function () use ($data, $selected) {
+            $products = Product::whereIn('id', $data['products'])->lockForUpdate()->get()->keyBy('id');
+            foreach ($data['products'] as $index => $id) {
+                $product = $products->get($id);
+                if (! $product || ! ($product->status === 'tersedia' || ($product->status === 'process' && in_array($id, $selected)))) {
+                    throw ValidationException::withMessages(["products.{$index}" => 'Barang tidak tersedia.']);
+                }
+            }
 
-        // Membuat entri transaksi baru
-        $transaction = new Transaction;
-        $transaction->member_id = $request->member_id;
-        $transaction->transaction_date = now();
-        $transaction->status = 'diproses';
-        $transaction->collateral = "belum ada";
-        $transaction->total = 0;
-        $transaction->save();
+            $transaction = new Transaction();
+            $transaction->member_id = $data['member_id'];
+            $transaction->transaction_date = now();
+            $transaction->status = 'diproses';
+            $transaction->collateral = 'belum ada';
+            $transaction->total = count($data['products']);
+            $transaction->save();
 
-        $total = 0;
-        foreach ($request->products as $productId) {
-            $item = new TransactionItem();
-            $item->transaction_id = $transaction->id;
-            $item->product_id = $productId;
-            $item->status = "diproses";
-            $item->quantity = 1;
-            $item->save();
+            foreach ($data['products'] as $id) {
+                $item = new TransactionItem();
+                $item->transaction_id = $transaction->id;
+                $item->product_id = $id;
+                $item->status = 'diproses';
+                $item->quantity = 1;
+                $item->save();
+                $products->get($id)->update(['status' => 'menunggu persetujuan']);
+            }
 
-            // Mengakses produk terkait dan mengubah statusnya
-            $product = Product::find($productId);
-            $product->status = "menunggu persetujuan";
-            $product->save();
-
-            $total += 1;
-        }
-
-        // Mengupdate total transaksi
-        $transaction->total = $total;
-        $transaction->save();
-
-        $products = Product::where('status', 'process')->get();
-
-        foreach ($products as $product) {
-            $product->status ='tersedia';
-            $product->save();
-        }
+            return $transaction;
+        });
+        $request->session()->forget('selected_products');
 
         return view('transaction.approval', ['transaction' => $transaction ]);
         // Kembalikan respons atau lakukan redirect sesuai kebutuhan Anda
@@ -176,9 +176,10 @@ class TransactionController extends Controller
 
     public function approve(Request $request)
     {
-        $transaction = Transaction::find($request->id);
+        $transaction = Transaction::findOrFail($request->input('id'));
+        $data = $request->validate(['collateral' => 'required|string|max:255']);
         $transaction->status = 'disetujui';
-        $transaction->collateral = $request->collateral;
+        $transaction->collateral = $data['collateral'];
         $transaction->save();
         
         $member = $transaction->member;
@@ -189,7 +190,7 @@ class TransactionController extends Controller
     }
 
     public function kembalikanbarang(Request $request){
-        $transactionItem = TransactionItem::find($request->id);
+        $transactionItem = TransactionItem::findOrFail($request->input('id'));
         $transactionItem->status = 'selesai';
         $transactionItem->save();
 
@@ -207,22 +208,25 @@ class TransactionController extends Controller
             // Jika semua produk telah selesai, ubah status transaksi menjadi 'selesai'
             $transaction->status = 'selesai';
             $transaction->save();
+            $member = $transaction->member;
+            $member->status = $member->transaction()->where('status', 'disetujui')->exists() ? 'meminjam' : 'tidak_ada';
+            $member->save();
         }
 
         return redirect()->back()->with('success', 'barang telah kembali'); 
     }
 
     public function kembalikan(Request $request){
-        $transaction = Transaction::find($request->id);
+        $transaction = Transaction::findOrFail($request->input('id'));
         $transaction->status = "selesai";
         $transaction->save();
 
         $member = $transaction->member;
-        $member->status = "tidak_ada";
+        $member->status = $member->transaction()->where('status', 'disetujui')->exists() ? 'meminjam' : 'tidak_ada';
         $member->save();
 
         foreach($transaction->transactionitem as $item){
-            $item->status =" selesai";
+            $item->status = 'selesai';
             $item->save();
 
             $product= $item->product;
@@ -245,37 +249,4 @@ class TransactionController extends Controller
         return view('transaction.view', ['transaction'=>$transaction]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaction $transaction)
-    {
-        //
-    }
 }
