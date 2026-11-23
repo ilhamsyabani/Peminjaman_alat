@@ -48,7 +48,7 @@ class TransactionController extends Controller
         $member->update(['status' => $data['status']]);
 
 
-        return redirect('dashboard')->with('status', 'Profile updated!');
+        return redirect('dashboard')->with('status', 'Pilihan member diperbarui.');
     }
 
 
@@ -75,7 +75,7 @@ class TransactionController extends Controller
         $request->session()->push('selected_products', $product->id);
 
 
-        return redirect('dashboard')->with('status', 'Profile updated!');
+        return redirect('dashboard')->with('status', 'Barang ditambahkan ke daftar pinjaman.');
     }
     /**
      * Display a listing of the resource.
@@ -186,7 +186,7 @@ class TransactionController extends Controller
         $member->status = "meminjam";
         $member->save();
 
-        return redirect('transactions')->with('message', 'Transaksi berhasil dibuat');
+        return redirect('transactions')->with('message', 'Peminjaman disetujui.');
     }
 
     public function kembalikanbarang(Request $request){
@@ -213,7 +213,7 @@ class TransactionController extends Controller
             $member->save();
         }
 
-        return redirect()->back()->with('success', 'barang telah kembali'); 
+        return redirect()->back()->with('success', 'Barang ditandai sudah dikembalikan.'); 
     }
 
     public function kembalikan(Request $request){
@@ -234,7 +234,7 @@ class TransactionController extends Controller
             $product->save();
         }
 
-        return redirect()->back()->with('success', 'pinjaman telah dikembalikan'); 
+        return redirect()->back()->with('success', 'Peminjaman selesai. Semua barang telah dikembalikan.'); 
     }
 
 

@@ -1,0 +1,137 @@
+/* Penyesuaian UI admin Pinjam di LAP (di atas tema Volt) */
+:root {
+  --app-dark: #1f2937;
+  --app-accent: #f8bd7a;
+  --app-line: #e5e7eb;
+}
+
+/* ---------- Layout ---------- */
+body.app { background: #f5f6f8; }
+.app .content { display: flex; flex-direction: column; min-height: 100vh; }
+.app .content > .app-footer { margin-top: auto; }
+
+.app-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 700; font-size: 1.05rem; padding: 6px 12px 22px; }
+.app-brand:hover { color: #fff; }
+.app-brand img { border-radius: 8px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .08); }
+.app-brand--mobile { padding: 0; font-size: 1rem; }
+
+.app-nav .nav-link { border-radius: 8px; }
+.app-nav .sidebar-icon { width: 22px; display: inline-flex; justify-content: center; margin-right: 10px; color: #9ca3af; }
+.app-nav .nav-item.active > .nav-link .sidebar-icon { color: var(--app-accent); }
+.app-nav .link-arrow i { font-size: .7rem; transition: transform .2s; }
+.app-nav [aria-expanded="true"] .link-arrow i { transform: rotate(90deg); }
+.app-nav .multi-level .nav-link { padding-left: 46px; }
+.app-nav__sep { height: 1px; background: rgba(255, 255, 255, .08); margin: 12px 10px; }
+
+.app-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 24px 4px 20px; color: #9ca3af; font-size: .85rem; border-top: 1px solid var(--app-line); margin-top: 32px; }
+
+/* ---------- Header halaman ---------- */
+.app-page-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; padding: 20px 0 24px; }
+.app-page-header .breadcrumb { font-size: .85rem; padding: 0; }
+.app-page-header .breadcrumb a { color: #6b7280; }
+.app-page-header__title { font-size: 1.6rem; font-weight: 700; color: #111827; margin: 4px 0 4px; }
+.app-page-header__subtitle { color: #6b7280; margin: 0; }
+
+/* ---------- Avatar & badge ---------- */
+.app-avatar { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; object-fit: cover; font-weight: 700; flex-shrink: 0; letter-spacing: .02em; line-height: 1; }
+.app-thumb { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: #eef0f3; color: #9ca3af; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+.app-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 600; white-space: nowrap; }
+.app-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8; }
+.app-badge--success { background: #ecfdf5; color: #047857; }
+.app-badge--warning { background: #fffbeb; color: #b45309; }
+.app-badge--info { background: #eff6ff; color: #1d4ed8; }
+.app-badge--neutral { background: #f3f4f6; color: #4b5563; }
+
+/* ---------- Tabel & toolbar ---------- */
+.app .table-wrapper { overflow-x: auto; }
+.app .table td, .app .table th { vertical-align: middle; }
+.app .table thead th { font-size: .75rem; letter-spacing: .04em; color: #6b7280; white-space: nowrap; }
+.app .table tbody tr:hover { background: #fafafa; }
+.app-cell-main { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+.app-cell-main .title { font-weight: 600; color: #111827; }
+.app-cell-main .sub { font-size: .8rem; color: #6b7280; }
+.app-actions { display: flex; gap: 4px; justify-content: flex-end; align-items: center; }
+.app-actions form { margin: 0; }
+.app-icon-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid transparent; background: transparent; color: #4b5563; }
+.app-icon-btn:hover { background: #f3f4f6; color: #111827; }
+.app-icon-btn--danger { color: #dc2626; }
+.app-icon-btn--danger:hover { background: #fef2f2; color: #b91c1c; }
+
+.app-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.app-toolbar .form-control, .app-toolbar .form-select { min-height: 40px; }
+.app .form-control:focus, .app .form-select:focus { border-color: #9ca3af; box-shadow: 0 0 0 3px rgba(248, 189, 122, .35); }
+
+.app-empty { text-align: center; color: #6b7280; padding: 40px 16px; }
+.app-empty i { font-size: 1.8rem; color: #d1d5db; margin-bottom: 10px; display: block; }
+
+/* ---------- Detail ---------- */
+.app-dl { display: grid; grid-template-columns: minmax(120px, 180px) 1fr; gap: 12px 24px; margin: 0; }
+.app-dl dt { color: #6b7280; font-weight: 500; }
+.app-dl dd { margin: 0; color: #111827; word-break: break-word; }
+.app-list-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--app-line); border-radius: 10px; margin-bottom: 8px; color: inherit; }
+.app-list-row:hover { border-color: #d1d5db; background: #fafafa; color: inherit; }
+
+/* ---------- Kartu statistik ---------- */
+.app-stat { display: flex; align-items: center; gap: 16px; }
+.app-stat__icon { width: 48px; height: 48px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; }
+.app-stat__label { color: #6b7280; font-size: .85rem; margin: 0; }
+.app-stat__value { font-size: 1.6rem; font-weight: 700; color: #111827; line-height: 1.1; margin: 0; }
+
+@media (max-width: 575.98px) {
+  .app-dl { grid-template-columns: 1fr; gap: 2px; }
+  .app-dl dd { margin-bottom: 10px; }
+  .app-page-header { align-items: stretch; }
+  .app-page-header > .btn { width: 100%; justify-content: center; }
+}
+
+/* Brand di navbar mobile: jangan kapital semua */
+.app-brand--mobile, .app-brand--mobile span { text-transform: none; letter-spacing: 0; }
+
+/* ---------- Dashboard ---------- */
+.min-w-0 { min-width: 0; }
+.app-step { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--app-dark); color: var(--app-accent); font-size: .75rem; font-weight: 700; margin-right: 6px; }
+.app-step--light { background: rgba(255, 255, 255, .2); color: #fff; }
+.app-hint { color: #6b7280; font-size: .9rem; padding: 14px; border: 1px dashed #d1d5db; border-radius: 10px; text-align: center; background: #fafafa; }
+.app-result { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--app-line); border-radius: 10px; margin-bottom: 8px; }
+.app-selected { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 12px; background: #f9fafb; border: 1px solid var(--app-line); }
+.app-pick { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--app-line); border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
+.app-pick:hover { background: #fafafa; }
+.app-pick:has(input:checked) { border-color: #9ca3af; background: #f9fafb; }
+.app .btn:disabled { opacity: .5; }
+.app-dl--compact { grid-template-columns: minmax(90px, 110px) 1fr; gap: 6px 14px; font-size: .9rem; }
+
+/* ---------- Halaman auth (tamu) ---------- */
+body.app-auth { background: radial-gradient(900px 400px at 50% -10%, #fff4e6 0%, rgba(255, 244, 230, 0) 70%), #f5f6f8; min-height: 100vh; }
+.app-auth__main { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 16px; }
+.app-auth__brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; color: #111827; margin-bottom: 24px; }
+.app-auth__brand img { border-radius: 10px; }
+.app-auth__card { width: 100%; max-width: 420px; background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 12px 32px rgba(17, 24, 39, .06); padding: 32px; }
+.app-auth__foot { color: #9ca3af; font-size: .82rem; margin: 24px 0 0; text-align: center; }
+@media (max-width: 575.98px) { .app-auth__card { padding: 24px 20px; } }
+
+/* ---------- Form ---------- */
+.app-image-drop { aspect-ratio: 4 / 3; border: 1px dashed #d1d5db; border-radius: 12px; background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #9ca3af; }
+.app-image-drop img { width: 100%; height: 100%; object-fit: cover; }
+.app-image-drop span { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: .9rem; }
+.app-image-drop i { font-size: 1.8rem; }
+.app .form-label { font-weight: 600; color: #374151; }
+.app-camera { position: relative; aspect-ratio: 4 / 3; background: #111827; border-radius: 12px; overflow: hidden; }
+.app-camera #my_camera, .app-camera #my_camera video, .app-camera img { width: 100% !important; height: 100% !important; object-fit: cover; }
+.app-camera__status { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; color: #f9fafb; background: rgba(17, 24, 39, .85); font-size: .9rem; }
+.app-trix { min-height: 280px; height: auto; background: #fff; }
+.app trix-toolbar .trix-button-group--file-tools { display: none; }
+.app-tree-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f2f4; }
+.app-tree-row:last-child { border-bottom: 0; }
+.app-chip { display: inline-flex; align-items: center; padding: 2px 8px; margin: 2px 4px 2px 0; border-radius: 6px; background: #f3f4f6; color: #4b5563; font-size: .78rem; }
+
+/* Baris daftar: konten utama mengisi ruang; di layar kecil aksi pindah ke bawah */
+.app-list-row > :first-child { flex: 1 1 auto; min-width: 0; }
+.app .table td { white-space: normal; }
+.app-cell-main .title { overflow-wrap: anywhere; }
+@media (max-width: 575.98px) {
+  .app-list-row { flex-wrap: wrap; }
+  .app-list-row > :first-child { flex-basis: 100%; }
+  .app-list-row > :last-child:not(:first-child) { margin-left: auto; }
+  .app-cell-main { min-width: 0; }
+}

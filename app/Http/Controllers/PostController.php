@@ -79,7 +79,7 @@ class PostController extends Controller
         $post = Post::create($validatedData);
 
         // Redirect atau lakukan operasi lainnya setelah penyimpanan berhasil
-        return redirect()->route('post.index', $post->slug)->with('success', 'Post berhasil disimpan.');
+        return redirect()->route('post.index', $post->slug)->with('success', 'Informasi berhasil disimpan.');
     }
 
     /**
@@ -143,7 +143,7 @@ class PostController extends Controller
 
         $post->update($validatedData);
 
-        return redirect()->route('post.index', $post->slug)->with('success', 'Post berhasil disimpan.');
+        return redirect()->route('post.index', $post->slug)->with('success', 'Informasi berhasil disimpan.');
     }
 
     /**
@@ -159,6 +159,6 @@ class PostController extends Controller
         }
 
         $post->delete();
-        return redirect()->route('post.index')->with('success', 'post deleted successfully');
+        return redirect()->route('post.index')->with('success', 'Informasi berhasil dihapus.');
     }
 }

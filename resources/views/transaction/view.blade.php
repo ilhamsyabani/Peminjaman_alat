@@ -1,97 +1,96 @@
 @extends('layouts.app')
 
+@section('title', 'Transaksi #' . $transaction->id)
+
 @section('content')
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header pb-0 px-3">
-                        <h6 class="mb-3">Informasi member</h6>
-                    </div>
-                    <div class="card-body pt-4 p-3">
-                        <ul class="list-group">
-                            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-                                <div class="d-flex flex-column px-4 col-3">
-                                    <img src="{{ asset('storage/' . $transaction->member?->photo) }}"
-                                        alt="{{ $transaction->member?->image }}">
-                                </div>
-                                <div class="d-flex flex-column">
-                                    <h6 style="font-size: 14px;">{{ $transaction->member?->name }}</h6>
-                                    <span style="font-size: 12px;" class="mb-0 text-xs">No handphone: <span
-                                            class="text-dark font-weight-bold ms-sm-2">{{ $transaction->member?->hp }}</span></span>
-                                    <span style="font-size: 12px;" class="mb-0 text-xs">Email: <span
-                                            class="text-dark ms-sm-2 font-weight-bold">{{ $transaction->member?->email }}</span></span>
-                                    <span style="font-size: 12px;" class="text-xs">Alamat: <span
-                                            class="text-dark ms-sm-2 font-weight-bold">{{ $transaction->member?->address }}</span></span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <hr>
-                    <div class="pb-0 px-3">
-                        <h6 class="mb-0">Daftar barang</h6>
-                    </div>
-                    <div class="pt-4 p-3">
-                        <ul class="list-group">
-                            @foreach ($transaction->transactionitem as $item)
-                                <li
-                                    class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                                    <div class="d-flex">
-                                        <div class="d-flex flex-column px-2">
-                                            <img src="{{ asset('storage/' . $item->product?->image) }}" style="height:50px"
-                                                alt="">
-                                        </div>
-                                        <div class="d-flex flex-column px-2">
-                                            <h6 class="mb-1 text-dark font-weight-bold text-sm">{{ $item->product?->name }}
-                                            </h6>
-                                            <span class="text-xs"
-                                                style="font-size:12px">{{ $item->product?->location?->name }},
-                                                {{ $item->product?->room?->name }},
-                                                {{ $item->product?->cabinet?->name ?? '—' }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex flex-column px-2">
-                                        @if ($item->status === 'selesai')
-                                            <p>barang sudah dikembalikan</p>
-                                        @else
-                                            <form action="{{ route('transactions.return.product') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" value="{{ $item->id }}" name="id">
-                                                <button class="btn btn-sm btn-gray-800  align-items-center m-2"
-                                                    type="submit">kembalikan</button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <hr>
-                    <div class="pt-2 p-3">
-                        <label class="my-1 me-2" for="collateral">Jaminan : {{ $transaction->collateral }}</label>
-                        <div class="mb-2 mt-2">
-                            @if ($transaction->status == 'selesai')
-                                <div class="alert alert-success d-flex align-items-center" role="alert">
-                                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
-                                        aria-label="Success:">
-                                        <use xlink:href="#check-circle-fill" />
-                                    </svg>
-                                    <div>
-                                        Semua barang sudah dikembalikan
+    @include('partials.page-header', [
+        'title' => 'Transaksi #' . $transaction->id,
+        'subtitle' => 'Dibuat ' . \Illuminate\Support\Carbon::parse($transaction->transaction_date)->locale('id')->translatedFormat('l, j F Y'),
+        'crumbs' => [['Peminjaman', route('transactions.index')], ['#' . $transaction->id, null]],
+    ])
+
+    @php
+        $items = $transaction->transactionitem;
+        $kembali = $items->where('status', 'selesai')->count();
+    @endphp
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h2 class="h6 mb-0">Daftar barang</h2>
+                    @if ($items->isNotEmpty())
+                        <span class="small text-gray-500">{{ $kembali }} dari {{ $items->count() }} sudah dikembalikan</span>
+                    @endif
+                </div>
+                <div class="card-body">
+                    @forelse ($items as $item)
+                        <div class="app-list-row">
+                            <div class="d-flex align-items-center gap-3 min-w-0">
+                                @if ($item->product?->image)
+                                    <img src="{{ asset('storage/' . $item->product->image) }}" alt="" class="app-thumb">
+                                @else
+                                    <span class="app-thumb"><i class="fas fa-box" aria-hidden="true"></i></span>
+                                @endif
+                                <div class="min-w-0">
+                                    <div class="fw-bold text-gray-900">{{ $item->product?->name ?? 'Barang terhapus' }}</div>
+                                    <div class="small text-gray-500 text-truncate">
+                                        {{ $item->product?->code }} · {{ $item->product?->location?->name }}, {{ $item->product?->room?->name }}{{ $item->product?->cabinet ? ', ' . $item->product->cabinet->name : '' }}
                                     </div>
                                 </div>
-                            @else
-                                <form action="{{ route('transactions.return') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $transaction->id }}">
-                                    <button class="btn btn-sm btn-gray-800 align-items-center mt-4" type="submit">Selesaikan
-                                        pinjaman</button>
-                                </form>
-                            @endif
+                            </div>
+                            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                @include('partials.status', ['status' => $item->status, 'type' => 'item'])
+                                @if ($transaction->status === 'disetujui' && $item->status !== 'selesai')
+                                    <form action="{{ route('transactions.return.product') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" value="{{ $item->id }}" name="id">
+                                        <button class="btn btn-sm btn-outline-gray-600" type="submit">kembalikan</button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
-                    </div>
+                    @empty
+                        <p class="app-hint mb-0">Transaksi ini tidak memiliki barang.</p>
+                    @endforelse
                 </div>
             </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h6 text-gray-500 text-uppercase small fw-bold mb-0">Status</h2>
+                        @include('partials.status', ['status' => $transaction->status, 'type' => 'transaction'])
+                    </div>
+
+                    @if ($transaction->status === 'diproses')
+                        @include('transaction._approve-form')
+                    @else
+                        <dl class="app-dl app-dl--compact mb-3">
+                            <dt>Jaminan</dt><dd>{{ $transaction->collateral }}</dd>
+                            <dt>Jumlah</dt><dd>{{ $transaction->total }} barang</dd>
+                        </dl>
+                        @if ($transaction->status === 'selesai')
+                            <div class="alert alert-success d-flex align-items-center mb-0" role="status">
+                                <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
+                                Semua barang sudah dikembalikan. Jaminan dapat diserahkan kembali.
+                            </div>
+                        @else
+                            <form action="{{ route('transactions.return') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $transaction->id }}">
+                                <button class="btn btn-gray-800 w-100" type="submit"
+                                    onclick="return confirm('Selesaikan pinjaman ini? Semua barang akan ditandai kembali.')">Selesaikan pinjaman</button>
+                            </form>
+                            <p class="small text-gray-500 mt-2 mb-0">Gunakan ini bila semua barang dikembalikan sekaligus.</p>
+                        @endif
+                    @endif
+                </div>
+            </div>
+
+            @include('transaction._member', ['member' => $transaction->member])
         </div>
     </div>
 @endsection

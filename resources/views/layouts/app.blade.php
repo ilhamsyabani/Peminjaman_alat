@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title', 'Pinjam di LAP') · LAP TP FIP UNY</title>
+    @include('partials.favicon')
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -24,18 +26,21 @@
 
 </head>
 
-<body>
+<body class="app">
+    <form method="POST" id="logout-form" action="{{ route('logout') }}" class="d-none">@csrf</form>
     @include('layouts.nav')
     @include('layouts.sidenav')
     <main class="content">
         {{-- TopBar --}}
         @include('layouts.topbar')
+        @include('partials.flash')
         @yield('content')
         {{-- Footer --}}
         @include('layouts.footer')
     </main>
 
     @yield('scripts')
+    @stack('form-scripts')
 </body>
 
 </html>

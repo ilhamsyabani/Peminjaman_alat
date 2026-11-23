@@ -1,61 +1,46 @@
 @extends('layouts.app')
 
+@section('title', 'Riwayat ' . $member->name)
+
 @section('content')
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header pb-0 px-3">
-                        <h6 class="mb-3">Informasi member</h6>
-                    </div>
-                    <div class="card-body pt-4 p-3">
-                        <ul class="list-group">
-                            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-                                <div class="d-flex flex-column px-4 col-3">
-                                    <img src="{{ asset('storage/' . $member->photo) }}"
-                                        alt="{{ $member->image }}">
+    @include('partials.page-header', [
+        'title' => 'Riwayat peminjaman',
+        'subtitle' => $member->name,
+        'crumbs' => [['Laporan', null], ['Member', route('report.member')], [$member->name, null]],
+    ])
+
+    @php($transaksi = $member->transaction()->with('transactionitem.product')->latest('transaction_date')->get())
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0">Semua transaksi</h2>
+                    <span class="small text-gray-500">{{ $transaksi->count() }} transaksi</span>
+                </div>
+                <div class="card-body">
+                    @forelse ($transaksi as $transaction)
+                        <a href="{{ route('transactions.view', $transaction) }}" class="app-list-row">
+                            <div class="min-w-0">
+                                <div class="fw-bold text-gray-900">
+                                    #{{ $transaction->id }} ·
+                                    {{ \Illuminate\Support\Carbon::parse($transaction->transaction_date)->locale('id')->translatedFormat('j F Y') }}
                                 </div>
-                                <div class="d-flex flex-column">
-                                    <h6 style="font-size: 14px;">{{ $member->name }}</h6>
-                                    <span style="font-size: 12px;" class="mb-0 text-xs">No handphone: <span
-                                            class="text-dark font-weight-bold ms-sm-2">{{ $member->hp }}</span></span>
-                                    <span style="font-size: 12px;" class="mb-0 text-xs">Email: <span
-                                            class="text-dark ms-sm-2 font-weight-bold">{{ $member->email }}</span></span>
-                                    <span style="font-size: 12px;" class="text-xs">Alamat: <span
-                                            class="text-dark ms-sm-2 font-weight-bold">{{ $member->address }}</span></span>
+                                <div class="small text-gray-500 text-truncate">
+                                    {{ $transaction->transactionitem->map(fn ($i) => $i->product?->name)->filter()->implode(', ') ?: 'Tanpa barang' }}
+                                    · Jaminan {{ $transaction->collateral }}
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <hr>
-                    <div class="pb-0 px-3">
-                        <h6 class="mb-0">Daftar Peminjaman</h6>
-                    </div>
-                    <div class="pt-4 p-3">
-                        <ul class="list-group">
-                            @foreach ($member->transaction as $transaction)
-                                <li
-                                    class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                                    <div class="d-flex">
-                                        <div class="d-flex flex-column px-2">
-                                            <h6 class="mb-1 text-dark font-weight-bold text-sm">tanggal peminjaman: {{ $transaction->transaction_date }}
-                                            </h6>
-                                            <span class="text-xs"
-                                                style="font-size:12px">Jaminan: {{ $transaction->collateral}},</span>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex flex-column px-2">
-                                        <div class="btn-group">
-                                            <a class="keychainify-checked p-2" href="{{ route('transactions.view', $transaction) }}">detail</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <hr>
+                            </div>
+                            @include('partials.status', ['status' => $transaction->status, 'type' => 'transaction'])
+                        </a>
+                    @empty
+                        <p class="app-hint mb-0">Member ini belum pernah meminjam.</p>
+                    @endforelse
                 </div>
             </div>
+        </div>
+        <div class="col-lg-4">
+            @include('transaction._member', ['member' => $member])
         </div>
     </div>
 @endsection

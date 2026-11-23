@@ -35,7 +35,7 @@ class LokasiControllers extends Controller
         Location::create($validations);
 
         return redirect()->route('location')
-            ->with('success', 'Items created successfully.');
+            ->with('success', 'Lokasi berhasil ditambahkan.');
     }
 
 
@@ -49,7 +49,7 @@ class LokasiControllers extends Controller
         Room::create($validations);
 
         return redirect()->route('location')
-            ->with('success', 'Room created successfully.');
+            ->with('success', 'Ruang berhasil ditambahkan.');
     }
 
     public function storelocker(Request $request)
@@ -62,6 +62,6 @@ class LokasiControllers extends Controller
         Cabinet::create($validations);
 
         return redirect()->route('location')
-            ->with('success', 'Lemari created successfully.');
+            ->with('success', 'Lemari berhasil ditambahkan.');
     }
 }

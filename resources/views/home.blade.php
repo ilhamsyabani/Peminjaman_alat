@@ -1,310 +1,177 @@
 @extends('layouts.app')
 
+@section('title', 'Dashboard')
+
 @section('content')
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Jumlah Member</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{  $data['user'] }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
+    @include('partials.page-header', [
+        'title' => 'Dashboard',
+        'subtitle' => 'Catat peminjaman baru dalam tiga langkah: pilih member, pilih barang, lalu ajukan.',
+    ])
+
+    {{-- Statistik --}}
+    <div class="row">
+        @foreach ([
+            ['Member terdaftar', $data['user'], 'fa-id-card', '#eff6ff', '#1d4ed8', route('members.index')],
+            ['Peminjaman aktif', $data['peminjaman'], 'fa-exchange-alt', '#fffbeb', '#b45309', route('transactions.index')],
+            ['Total transaksi', $data['transaksi'], 'fa-file-alt', '#f5f3ff', '#6d28d9', route('report.transaction')],
+            ['Jumlah barang', $data['barang'], 'fa-box', '#ecfdf5', '#047857', route('products.index')],
+        ] as [$label, $value, $icon, $bg, $fg, $url])
+            <div class="col-6 col-xl-3 mb-4">
+                <a href="{{ $url }}" class="card border-0 shadow h-100 text-decoration-none">
+                    <div class="card-body app-stat">
+                        <span class="app-stat__icon" style="background: {{ $bg }}; color: {{ $fg }}">
+                            <i class="fas {{ $icon }}" aria-hidden="true"></i>
+                        </span>
+                        <div>
+                            <p class="app-stat__label">{{ $label }}</p>
+                            <p class="app-stat__value">{{ number_format($value, 0, ',', '.') }}</p>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Jumlah Transaksi</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{ $data['transaksi']}}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        @endforeach
+    </div>
+
+    <div class="row">
+        {{-- Langkah 1: member --}}
+        <div class="col-lg-7 mb-4">
+            <div class="card border-0 shadow h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0"><span class="app-step">1</span> Pilih member</h2>
+                    <a class="btn btn-sm btn-outline-gray-600" href="{{ route('members.create') }}">
+                        <i class="fas fa-user-plus me-1" aria-hidden="true"></i> Member baru
+                    </a>
                 </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Transaksi Berjalan</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{  $data['peminjaman']}}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
+                <div class="card-body">
+                    @if ($member)
+                        <div class="app-selected">
+                            @include('partials.avatar', ['name' => $member->name, 'photo' => $member->photo, 'size' => 56])
+                            <div class="flex-grow-1 min-w-0">
+                                <h6 class="mb-1">{{ $member->name }}</h6>
+                                <div class="small text-gray-600">{{ $member->identity_number }} · {{ $member->hp }}</div>
+                                <div class="small text-gray-500 text-truncate">{{ $member->email }} · {{ $member->address }}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Jumlah Barang</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{  $data['barang'] }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button type="button" class="btn btn-gray-800" data-bs-toggle="modal" data-bs-target="#modalProduct">
+                                <i class="fas fa-plus me-1" aria-hidden="true"></i> Tambah barang
+                            </button>
+                            <form action="{{ url('/processmember') }}" method="POST">
+                                @csrf
+                                <input type="hidden" value="{{ $member->id }}" name="id">
+                                <input type="hidden" value="tidak_ada" name="status">
+                                <button class="btn btn-outline-danger">Batalkan</button>
+                            </form>
                         </div>
-                    </div>
+                    @else
+                        <label for="searchmember" class="form-label">Cari berdasarkan nama atau nomor identitas</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
+                            <input type="search" class="form-control" placeholder="Contoh: Andi atau 3273…"
+                                name="search" id="searchmember" autocomplete="off" autofocus>
+                        </div>
+                        <ul class="list-unstyled mb-0" id="search-results" aria-live="polite">
+                            <li class="app-hint">Ketik minimal satu huruf untuk mencari member.</li>
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-header pb-0 p-3">
-                        <div class="row">
-                            <div class="col-6 d-flex align-items-center">
-                                <h6 class="mb-0">Cari data member</h6>
-                            </div>
-                            <div class="col-6 text-end">
-                                <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i
-                                        class="fas fa-plus"></i>&nbsp;&nbsp;Tambah member</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="mb-4">
-                                <div class="input-group me-2 me-lg-3 fmxw-400">
-                                    <span class="input-group-text">
-                                        <svg class="icon icon-xs" x-description="Heroicon name: solid/search"
-                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
+        {{-- Langkah 2 & 3: barang --}}
+        <div class="col-lg-5 mb-4">
+            <div class="card border-0 shadow h-100">
+                <div class="card-header bg-white">
+                    <h2 class="h6 mb-0"><span class="app-step">2</span> Barang dipinjam</h2>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <form method="post" action="{{ route('transactions.store') }}" class="d-flex flex-column flex-grow-1">
+                        @csrf
+                        @forelse ($products as $product)
+                            <label class="app-pick">
+                                <input type="checkbox" class="form-check-input mt-0" name="products[]" value="{{ $product->id }}" checked>
+                                @if ($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="" class="app-thumb">
+                                @else
+                                    <span class="app-thumb"><i class="fas fa-box" aria-hidden="true"></i></span>
+                                @endif
+                                <span class="min-w-0">
+                                    <span class="d-block fw-bold text-gray-900">{{ $product->name }}</span>
+                                    <span class="d-block small text-gray-500 text-truncate">
+                                        {{ $product->code }} · {{ $product->room?->name }}{{ $product->cabinet ? ', ' . $product->cabinet->name : '' }}
                                     </span>
-                                    <input type="text" class="form-control" placeholder="cari data barang disini"
-                                        name="search" id="searchmember" value="{{ old('search') ?? '' }}" autofocus>
-                                </div>
+                                </span>
+                            </label>
+                        @empty
+                            <div class="app-hint">
+                                {{ $member ? 'Klik “Tambah barang” untuk memilih barang yang akan dipinjam.' : 'Pilih member terlebih dahulu.' }}
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        @endforelse
 
-                <div class="card">
-                    <div class="card-header pb-0 px-3">
-                        <h6 class="mb-3">Informasi member</h6>
-                    </div>
-                    <div class="card-body pt-4 p-3">
-                        @if ($member)
-                            <ul class="list-group">
-                                <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-                                    <div class="d-flex flex-column px-4 col-3">
-                                        <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->image }}">
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <h6 style="font-size: 14px;">{{ $member->name }}</h6>
-                                        <span style="font-size: 12px;" class="mb-0 text-xs">No handphone: <span
-                                                class="text-dark font-weight-bold ms-sm-2">{{ $member->hp }}</span></span>
-                                        <span style="font-size: 12px;" class="mb-0 text-xs">Email: <span
-                                                class="text-dark ms-sm-2 font-weight-bold">{{ $member->email }}</span></span>
-                                        <span style="font-size: 12px;" class="text-xs">Alamat: <span
-                                                class="text-dark ms-sm-2 font-weight-bold">{{ $member->address }}</span></span>
-                                        <div class="d-flex">
-                                            <button
-                                                class="btn btn-sm btn-gray-800 align-items-center mt-2  mb-2 d-flex flex-column"
-                                                data-bs-toggle="modal" data-bs-target="#modalProduct">tambah
-                                                barang</button>
-                                            <form action="{{ url('/processmember') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" value="{{ $member->id }}" name="id">
-                                                <input type="hidden" value="tidak_ada" name="status">
-                                                <button
-                                                    class="btn btn-sm btn-red-200 align-items-center m-2 d-flex flex-column">batalkan</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        @else
-                            <ul class="list-group" id="search-results">
-                            </ul>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card h-100">
-                    <div class="card-header pb-0 p-3">
-                        <div class="row">
-                            <div class="col-6 d-flex align-items-center mb-3">
-                                <h6 class="mb-0">Daftar barang</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-3 pb-0">
-                        <form method="post" action="{{ route('transactions.store') }}">
-                            @csrf
-                            <ul class="list-group">
-                                @foreach ($products as $product)
-                                    <li
-                                        class="list-group-item border-0 d-flex justify-content-start ps-0 mb-2 border-radius-lg">
-                                        <div class="d-flex flex-column">
-                                            <input type="checkbox" class="form-check-input" name="products[]"
-                                                value="{{ $product->id }}">
-                                        </div>
-                                        <div class="d-flex flex-column px-2">
-                                            <img src="{{ asset('storage/' . $product->image) }}" style="height:50px"
-                                                alt="">
-                                        </div>
-                                        <div class="d-flex flex-column px-2">
-                                            <h6 class="mb-1 text-dark font-weight-bold text-sm">{{ $product->name }}</h6>
-                                            <span class="text-xs" style="font-size:12px">{{ $product->location->name }},
-                                                {{ $product->room->name }}, {{ $product->cabinet?->name ?? '—' }}</span>
-                                        </div>
-
-                                    </li>
-                                @endforeach
-                            </ul>
+                        <div class="mt-auto pt-3">
                             @if ($member)
-                            <input type="hidden" name="member_id" value="{{ $member->id }}">
+                                <input type="hidden" name="member_id" value="{{ $member->id }}">
                             @endif
-                            <button class="btn btn-sm btn-red-200 align-items-center m-2" type="submit">Ajukan
-                                pinjaman</button>
-                        </form>
-                    </div>
+                            <button class="btn btn-primary w-100" type="submit" @disabled(!$member || $products->isEmpty())>
+                                <span class="app-step app-step--light">3</span> Ajukan pinjaman
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modalProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade" id="modalProduct" tabindex="-1" aria-labelledby="modalProductLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Tambahkan barang pinjaman</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="modalProductLabel">Tambahkan barang pinjaman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="col mb-3">
-                        <label for="username" class="form-label">Cari barang</label>
-                        <div class="input-group me-2 me-lg-3 fmxw-400">
-                            <span class="input-group-text">
-                                <svg class="icon icon-xs" x-description="Heroicon name: solid/search"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    aria-hidden="true">
-                                    <path fill-rule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                            </span>
-                            <input type="text" class="form-control" placeholder="cari data barang disini"
-                                name="search" id="searchproduct" value="{{ old('search') ?? '' }}" autofocus>
-                        </div>
+                    <label for="searchproduct" class="form-label">Cari barang yang tersedia</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
+                        <input type="search" class="form-control" placeholder="Nama atau kode barang"
+                            name="search" id="searchproduct" autocomplete="off">
                     </div>
-                    <div class="col-sm-12 mb-3">
-                        <ul class="list-group" id="results-product">
-
-                        </ul>
-                    </div>
+                    <ul class="list-unstyled mb-0" id="results-product" aria-live="polite">
+                        <li class="app-hint">Ketik nama atau kode barang.</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 
-
 @section('scripts')
     <script>
-        $(document).ready(function() {
-
-            readData();
-
-            $("#searchmember").keyup(function() {
-                var strcari = $(this).val();
-                if (strcari != "") {
-                    $.ajax({
-                        type: "get",
-                        url: "{{ url('/search-member') }}",
-                        data: "search=" + strcari, // Send data as an object
-                        success: function(data) {
-                            $("#search-results").html(data);
-                        }
+        (function () {
+            function liveSearch(input, target, url, hint) {
+                var timer, last = null;
+                function run() {
+                    var q = $(input).val().trim();
+                    if (q === last) return;
+                    last = q;
+                    if (q === '') { $(target).html('<li class="app-hint">' + hint + '</li>'); return; }
+                    $(target).html('<li class="app-hint">Mencari…</li>');
+                    $.get(url, { search: q }).done(function (data) {
+                        if (q !== last) return; // abaikan respons yang sudah usang
+                        var empty = typeof data === 'object' || !$.trim(data);
+                        $(target).html(empty ? '<li class="app-hint">Tidak ada hasil untuk pencarian ini.</li>' : data);
+                    }).fail(function () {
+                        $(target).html('<li class="app-hint text-danger">Gagal memuat hasil. Coba lagi.</li>');
                     });
-                } else {
-                    // Handle empty search case if needed
-                    readData();
-                    // $("#search-results").html('');
                 }
+                $(document).on('input keyup', input, function () { clearTimeout(timer); timer = setTimeout(run, 250); });
+            }
+
+            $(function () {
+                liveSearch('#searchmember', '#search-results', "{{ url('/search-member') }}", 'Ketik minimal satu huruf untuk mencari member.');
+                liveSearch('#searchproduct', '#results-product', "{{ url('/search-product') }}", 'Ketik nama atau kode barang.');
+                $('#modalProduct').on('shown.bs.modal', function () { $('#searchproduct').trigger('focus'); });
             });
-
-            $("#searchproduct").keyup(function() {
-                var strcari = $(this).val();
-                if (strcari != "") {
-                    $.ajax({
-                        type: "get",
-                        url: "{{ url('/search-product') }}",
-                        data: "search=" + strcari, // Send data as an object
-                        success: function(data) {
-                            $("#results-product").html(data);
-                        }
-                    });
-                } else {
-                    // Handle empty search case if needed
-                    readData1();
-                    // $("#search-results").html('');
-                }
-            });
-        });
-
-        function readData() {
-            $.get("{{ url('/search-no-result') }}", {},
-                function(data, status) {
-                    $("#search-results").html(data);
-                });
-        }
-
-        function readData1() {
-            $.get("{{ url('/search-no-result') }}", {},
-                function(data, status) {
-                    $("#results-product").html(data);
-                });
-        }
+        })();
     </script>
 @endsection

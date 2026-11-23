@@ -32,13 +32,16 @@ class ProductController extends Controller
             });
         }
 
-        // Apply category filter
-        if ($filter !== 'all') {
-            $productsQuery->where('category', $filter);
+        // Filter status (whitelist; tabel products tidak punya kolom category)
+        $statuses = ['tersedia', 'process', 'menunggu persetujuan', 'kosong'];
+        if (in_array($filter, $statuses, true)) {
+            $productsQuery->where('status', $filter);
+        } else {
+            $filter = 'all';
         }
 
         // Paginate the results and append query parameters
-        $products = $productsQuery->paginate($pagination)->appends([
+        $products = $productsQuery->orderBy('code')->paginate($pagination)->appends([
             'pagination' => $pagination,
             'search' => $search,
             'filter' => $filter,
@@ -89,7 +92,7 @@ class ProductController extends Controller
         Product::create($validations);
 
         return redirect()->route('products.index')
-            ->with('success', 'Items created successfully.');
+            ->with('success', 'Barang berhasil ditambahkan.');
     }
 
     /**
@@ -152,7 +155,7 @@ class ProductController extends Controller
 
         Product::where('id', $product->id)->update($validatedItem);
 
-        return  redirect()->route('products.index')->with('success', 'Data Bearang telah diuabah');
+        return  redirect()->route('products.index')->with('success', 'Data barang berhasil diperbarui.');
     }
 
     /**
@@ -172,6 +175,6 @@ class ProductController extends Controller
         }
 
         Product::destroy($product->id);
-        return  redirect()->route('products.index')->with('success', 'Item deleted successfully');
+        return  redirect()->route('products.index')->with('success', 'Barang berhasil dihapus.');
     }
 }

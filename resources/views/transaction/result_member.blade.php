@@ -1,23 +1,16 @@
 @foreach ($members as $member)
-    <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-        <div class="d-flex flex-column px-4 col-3">
-            <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->image }}">
+    <li class="app-result">
+        @include('partials.avatar', ['name' => $member->name, 'photo' => $member->photo, 'size' => 44])
+        <div class="flex-grow-1 min-w-0">
+            <div class="fw-bold text-gray-900">{{ $member->name }}</div>
+            <div class="small text-gray-500 text-truncate">{{ $member->identity_number }} · {{ $member->hp }}</div>
+            <div class="mt-1">@include('partials.status', ['status' => $member->status, 'type' => 'member'])</div>
         </div>
-        <div class="d-flex flex-column">
-            <h6 style="font-size: 14px;">{{ $member->name }}</h6>
-            <span style="font-size: 12px;" class="mb-0 text-xs">No handphone: <span
-                    class="text-dark font-weight-bold ms-sm-2">{{ $member->hp }}</span></span>
-            <span style="font-size: 12px;" class="mb-0 text-xs">Email: <span
-                    class="text-dark ms-sm-2 font-weight-bold">{{ $member->email }}</span></span>
-            <span style="font-size: 12px;" class="text-xs">Alamat: <span
-                    class="text-dark ms-sm-2 font-weight-bold">{{ $member->address }}</span></span>
-            <form action="{{ url('/processmember') }}" method="POST">
-                @csrf
-                <input type="hidden" value="{{ $member->id }}" name="id">
-                <input type="hidden" value="process" name="status">
-                <button type="submit" class="btn btn-sm btn-gray-800 align-items-center mt-2">tambah</button>
-            </form>
-
-        </div>
+        <form action="{{ url('/processmember') }}" method="POST">
+            @csrf
+            <input type="hidden" value="{{ $member->id }}" name="id">
+            <input type="hidden" value="process" name="status">
+            <button type="submit" class="btn btn-sm btn-gray-800" aria-label="Pilih {{ $member->name }}">Pilih</button>
+        </form>
     </li>
 @endforeach

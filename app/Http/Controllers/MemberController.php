@@ -34,7 +34,7 @@ class MemberController extends Controller
         }
 
         // Paginate the results and append query parameters
-        $members = $membersQuery->paginate($pagination)->appends([
+        $members = $membersQuery->orderBy('name')->paginate($pagination)->appends([
             'pagination' => $pagination,
             'search' => $search,
         ]);
@@ -76,16 +76,7 @@ class MemberController extends Controller
             'status' => 'required|in:tidak_ada,process,meminjam',
         ]);
 
-        if (! preg_match('/^data:image\/(png|jpeg|jpg);base64,([A-Za-z0-9+\/=]+)$/', $validation['photo'], $matches)) {
-            throw ValidationException::withMessages(['photo' => 'Format foto tidak valid.']);
-        }
-        $image = base64_decode($matches[2], true);
-        if ($image === false) {
-            throw ValidationException::withMessages(['photo' => 'Format foto tidak valid.']);
-        }
-
-        $file = 'uploads/'.Str::random(40).'.png';
-        Storage::put($file, $image);
+        $file = $this->storeWebcamPhoto($validation['photo']);
         $validation['photo'] = $file;
         try {
             Member::create($validation);
@@ -95,7 +86,7 @@ class MemberController extends Controller
         }
 
         return redirect()->route('members.index')
-            ->with('success', 'Items created successfully.');
+            ->with('success', 'Member berhasil ditambahkan.');
     }
 
     /**
@@ -146,16 +137,25 @@ class MemberController extends Controller
 
         //dd($validated);
 
+        // Foto baru: hasil kamera (data URI base64) dari form edit, atau unggahan file.
+        $oldPhoto = $member->photo;
+        $newPhoto = null;
         if ($request->file('photo')) {
-            if ($request->oldImg) {
-                Storage::delete($request->oldImg);
-            }
-            $validated['photo'] = $request->file('photo')->store('img-source');
+            $newPhoto = $request->file('photo')->store('img-source');
+        } elseif (is_string($request->input('photo')) && str_starts_with($request->input('photo'), 'data:image/')) {
+            $newPhoto = $this->storeWebcamPhoto($request->input('photo'));
+        }
+        if ($newPhoto) {
+            $validated['photo'] = $newPhoto;
         }
 
         Member::where('id', $member->id)->update($validated);
 
-        return redirect('members')->with('success', 'Data Member has been Updated..!');
+        if ($newPhoto && $oldPhoto && $oldPhoto !== $newPhoto) {
+            Storage::delete($oldPhoto);
+        }
+
+        return redirect('members')->with('success', 'Data member berhasil diperbarui.');
     }
 
     /**
@@ -175,6 +175,25 @@ class MemberController extends Controller
         }
 
         Member::destroy($member->id);
-        return  redirect()->route('members.index')->with('success', 'Item deleted successfully');
+        return  redirect()->route('members.index')->with('success', 'Member berhasil dihapus.');
+    }
+
+    /**
+     * Simpan foto webcam (data URI base64 PNG/JPEG) dan kembalikan path-nya.
+     */
+    private function storeWebcamPhoto(string $dataUri): string
+    {
+        if (! preg_match('/^data:image\/(png|jpeg|jpg);base64,([A-Za-z0-9+\/=]+)$/', $dataUri, $matches)) {
+            throw ValidationException::withMessages(['photo' => 'Format foto tidak valid.']);
+        }
+        $image = base64_decode($matches[2], true);
+        if ($image === false) {
+            throw ValidationException::withMessages(['photo' => 'Format foto tidak valid.']);
+        }
+
+        $file = 'uploads/'.Str::random(40).'.png';
+        Storage::put($file, $image);
+
+        return $file;
     }
 }

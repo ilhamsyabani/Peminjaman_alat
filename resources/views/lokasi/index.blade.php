@@ -1,244 +1,163 @@
 @extends('layouts.app')
 
+@section('title', 'Lokasi')
 
 @section('content')
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
-        <div class="d-block mb-4 mb-md-0">
-            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                    <li class="breadcrumb-item">
-                        <a href="#" class="keychainify-checked">
-                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                                </path>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#" class="keychainify-checked">Volt</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Lokasi</li>
-                </ol>
-            </nav>
-            <h3 class="h4">Lokasi</h3>
-            <p class="mb-0">Lokasi Penyimpanan Barang</p>
+    @include('partials.page-header', [
+        'title' => 'Lokasi',
+        'subtitle' => 'Gedung, ruang, dan lemari tempat barang disimpan.',
+        'crumbs' => [['Lokasi', null]],
+    ])
+
+    @php
+        $locations = \App\Models\Location::orderBy('name')->get();
+        $roomsByLoc = \App\Models\Room::orderBy('name')->get()->groupBy('location_id');
+        $cabsByRoom = \App\Models\Cabinet::orderBy('name')->get()->groupBy('room_id');
+        $productCount = \App\Models\Product::selectRaw('room_id, count(*) as n')->groupBy('room_id')->pluck('n', 'room_id');
+    @endphp
+
+    @if ($errors->any())
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
+            Data belum tersimpan: {{ $errors->first() }}
+        </div>
+    @endif
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <button type="button" class="btn btn-gray-800" data-bs-toggle="modal" data-bs-target="#modal1">
+            <i class="fas fa-building me-1" aria-hidden="true"></i> Tambah gedung
+        </button>
+        <button type="button" class="btn btn-outline-gray-600" data-bs-toggle="modal" data-bs-target="#modalRuang" @disabled($locations->isEmpty())>
+            <i class="fas fa-door-open me-1" aria-hidden="true"></i> Tambah ruang
+        </button>
+        <button type="button" class="btn btn-outline-gray-600" data-bs-toggle="modal" data-bs-target="#modalLemari" @disabled($roomsByLoc->isEmpty())>
+            <i class="fas fa-archive me-1" aria-hidden="true"></i> Tambah lemari
+        </button>
+    </div>
+
+    @forelse ($locations as $location)
+        @php($rooms = $roomsByLoc->get($location->id, collect()))
+        <div class="card border-0 shadow mb-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0"><i class="fas fa-building text-gray-400 me-2" aria-hidden="true"></i>{{ $location->name }}</h2>
+                <span class="small text-gray-500">{{ $rooms->count() }} ruang</span>
+            </div>
+            <div class="card-body py-2">
+                @forelse ($rooms as $room)
+                    @php($cabs = $cabsByRoom->get($room->id, collect()))
+                    <div class="app-tree-row">
+                        <div class="min-w-0">
+                            <div class="fw-bold text-gray-900">
+                                <i class="fas fa-door-open text-gray-400 me-2" aria-hidden="true"></i>{{ $room->name }}
+                            </div>
+                            <div class="small text-gray-500 ms-4 mt-1">
+                                @if ($cabs->isEmpty())
+                                    Tanpa lemari
+                                @else
+                                    @foreach ($cabs as $cab)
+                                        <span class="app-chip"><i class="fas fa-archive me-1" aria-hidden="true"></i>{{ $cab->name }}</span>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                        <span class="small text-gray-500 text-nowrap">{{ $productCount->get($room->id, 0) }} barang</span>
+                    </div>
+                @empty
+                    <p class="text-gray-500 small my-2">Belum ada ruang di gedung ini.</p>
+                @endforelse
+            </div>
+        </div>
+    @empty
+        <div class="card border-0 shadow">
+            <div class="app-empty">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Belum ada lokasi. Mulai dengan menambahkan gedung.
+            </div>
+        </div>
+    @endforelse
+
+    {{-- Modal: gedung --}}
+    <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('simpan.lokasi') }}" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal1Label">Tambah gedung</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="lokasi-name" class="form-label">Nama gedung</label>
+                    <input type="text" name="name" class="form-control" id="lokasi-name" placeholder="Contoh: Gedung Fakultas Teknik" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-gray-600" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-gray-800">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header">
-        </div>
-        <div class="card-body">
 
-            <div class="row">
-                <div class="col-sm-6 mb-4">
-                    <div class="form-group">
-                        <label for="country">lokasi</label>
-                        <select class="form-select" id="country-dropdown">
-                            <option value="">Pilih Lokasi</option>
-                            @foreach ($countries as $country)
-                                <option value="{{ $country->id }}">
-                                    {{ $country->name }}
-                                </option>
+    {{-- Modal: ruang --}}
+    <div class="modal fade" id="modalRuang" tabindex="-1" aria-labelledby="modalRuangLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('simpan.ruang') }}" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRuangLabel">Tambah ruang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ruang-location" class="form-label">Gedung</label>
+                        <select class="form-select" id="ruang-location" name="location_id" required>
+                            @foreach ($locations as $location)
+                                <option value="{{ $location->id }}">{{ $location->name }}</option>
                             @endforeach
                         </select>
                     </div>
+                    <label for="ruang-name" class="form-label">Nama ruang</label>
+                    <input type="text" name="name" class="form-control" id="ruang-name" placeholder="Contoh: Laboratorium Multimedia" required>
                 </div>
-                <div class="col-sm-6 align-self-center mt-1">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal1">
-                        Tambah Lokasi
-                    </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-gray-600" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-gray-800">Simpan</button>
                 </div>
-                <div class="col-sm-6 mb-4">
-                    <div class="form-group">
-                        <label for="state">Ruang</label>
-                        <select class="form-select" id="state-dropdown">
+            </form>
+        </div>
+    </div>
+
+    {{-- Modal: lemari --}}
+    <div class="modal fade" id="modalLemari" tabindex="-1" aria-labelledby="modalLemariLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('simpan.lemari') }}" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLemariLabel">Tambah lemari</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="lemari-room" class="form-label">Ruang</label>
+                        <select class="form-select" id="lemari-room" name="room_id" required>
+                            @foreach ($locations as $location)
+                                @if ($roomsByLoc->has($location->id))
+                                    <optgroup label="{{ $location->name }}">
+                                        @foreach ($roomsByLoc->get($location->id) as $room)
+                                            <option value="{{ $room->id }}">{{ $room->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
+                            @endforeach
                         </select>
                     </div>
+                    <label for="lemari-name" class="form-label">Nama lemari / tempat penyimpanan</label>
+                    <input type="text" name="name" class="form-control" id="lemari-name" placeholder="Contoh: Lemari C1" required>
                 </div>
-                <div class="col-sm-6 align-self-center mt-1">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRuang">
-                        Tambah Ruang
-                    </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-gray-600" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-gray-800">Simpan</button>
                 </div>
-                <div class="col-sm-6 mb-4">
-                    <div class="form-group">
-                        <label for="city">Lemari</label>
-                        <select class="form-select" id="city-dropdown">
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-6 align-self-center mt-1">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLemari">
-                        Tambah Lemari
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
-
-    <div class="modal fade" id="modal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Tambah Lokasi Baru</h5>
-                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times<i
-                        class="bi bi-x"></i></button> --}}
-                </div>
-                <form method="POST" action="{{ route('simpan.lokasi') }}">
-                    <div class="modal-body">
-                        @csrf
-                        <div class="col-sm-8 mb-3">
-                            <label for="name" class="form-label">Nama Lokasi</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                                id="name" placeholder="{{ __('Nama Lokasi Baru') }}" required autofocus>
-                        </div>
-                        @error('name')
-                            <div class="form-group custom-control">
-                                <label class="">{{ $message }}</label>
-                            </div>
-                        @enderror
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalRuang" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Tamabah Ruang Baru</h5>
-                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
-                </div>
-                <form method="POST" action="{{ route('simpan.ruang') }}">
-                    <div class="modal-body">
-                        @csrf
-                        <div class="col-sm-10 mb-3">
-                            <label for="country">Lokasi</label>
-                            <select class="form-control" id="country-dropdown" name="location_id">
-                                @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}">
-                                        {{ $country->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-sm-10 mb-3">
-                            <label for="name" class="form-label">Nama Ruang</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                                id="name" placeholder="{{ __('Nama Lokasi Baru') }}" required autofocus>
-                        </div>
-                        @error('name')
-                            <div class="form-group custom-control">
-                                <label class="">{{ $message }}</label>
-                            </div>
-                        @enderror
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalLemari" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('simpan.lemari') }}" method="post">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                        {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-sm-10 mb-3">
-                            <label for="country">Ruangan</label>
-                            <select class="form-control" id="country-dropdown" name="room_id">
-                                @foreach ($rooms as $country)
-                                    <option value="{{ $country->id }}">
-                                        {{ $country->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-sm-10 mb-3">
-                            <label for="username" class="form-label">Nama Lemari/Penyimpanan</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                                id="name" placeholder="{{ __('Nama Lokasi Baru') }}" required autofocus>
-                        </div>
-
-                        @error('name')
-                            <div class="form-group custom-control">
-                                <label class="">{{ $message }}</label>
-                            </div>
-                        @enderror
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endsection
-
-@section('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#country-dropdown').on('change', function() {
-                var country_id = this.value;
-                $("#state-dropdown").html('');
-                $.ajax({
-                    url: "{{ url('get-states-by-country') }}",
-                    type: "POST",
-                    data: {
-                        country_id: country_id,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function(result) {
-                        $('#state-dropdown').html('<option value="">Pilih Ruangan</option>');
-                        $.each(result.states, function(key, value) {
-                            $("#state-dropdown").append('<option value="' + value.id +
-                                '">' + value.name + '</option>');
-                        });
-                        $('#city-dropdown').html(
-                            '<option value="">Piling Lemari</option>');
-                    }
-                });
-            });
-            $('#state-dropdown').on('change', function() {
-                var state_id = this.value;
-                $("#city-dropdown").html('');
-                $.ajax({
-                    url: "{{ url('get-cities-by-state') }}",
-                    type: "POST",
-                    data: {
-                        state_id: state_id,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function(result) {
-                        $('#city-dropdown').html('<option value="">Pilih Lemari</option>');
-                        $.each(result.cities, function(key, value) {
-                            $("#city-dropdown").append('<option value="' + value.id +
-                                '">' + value.name + '</option>');
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 @endsection

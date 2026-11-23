@@ -125,7 +125,7 @@ class TransactionTest extends SmokeTestCase
     {
         $trx = Transaction::where('status', 'diproses')->firstOrFail();
         $this->actingAsAdmin()->post('/transactions/approve', ['id' => $trx->id, 'collateral' => 'KTP'])
-            ->assertRedirect('transactions')->assertSessionHas('message', 'Transaksi berhasil dibuat');
+            ->assertRedirect('transactions')->assertSessionHas('message', 'Peminjaman disetujui.');
         $this->assertSame('disetujui', $trx->fresh()->status);
         $this->assertSame('KTP', $trx->fresh()->collateral);
         $this->assertSame('meminjam', $trx->member->fresh()->status);
@@ -135,7 +135,7 @@ class TransactionTest extends SmokeTestCase
     {
         $trx = $this->approvedTransaction();
         $this->actingAsAdmin()->from('/transactions')->post('/transactions/return', ['id' => $trx->id])
-            ->assertRedirect('/transactions')->assertSessionHas('success', 'pinjaman telah dikembalikan');
+            ->assertRedirect('/transactions')->assertSessionHas('success', 'Peminjaman selesai. Semua barang telah dikembalikan.');
 
         $this->assertSame('selesai', $trx->fresh()->status);
         $this->assertSame('tidak_ada', $trx->member->fresh()->status);

@@ -22,7 +22,7 @@ class UserProfileTest extends SmokeTestCase
         $this->actingAsAdmin()->from('/profile')->put('/profile', [
             'name' => 'Admin Baru', 'email' => 'admin.baru@peminjaman.test',
             'password' => 'passwordbaru', 'password_confirmation' => 'passwordbaru',
-        ])->assertRedirect('/profile')->assertSessionHas('success', 'Profile updated.');
+        ])->assertRedirect('/profile')->assertSessionHas('success', 'Profil berhasil diperbarui.');
 
         $user = \App\Models\User::where('email', 'admin.baru@peminjaman.test')->firstOrFail();
         $this->assertSame('Admin Baru', $user->name);

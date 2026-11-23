@@ -81,4 +81,62 @@ class FormContractTest extends SmokeTestCase
             $html, 'Tombol "Selesaikan pinjaman" tidak berada di dalam <form action=transactions.return>'
         );
     }
+
+    public function test_edit_barang_yang_dipinjam_tidak_mengubah_statusnya(): void
+    {
+        $p = $this->product('BRG-0006'); // status "menunggu persetujuan" (sedang dipinjam)
+        $html = $this->actingAsAdmin()->get("/products/{$p->id}/edit")->assertOk()->getContent();
+
+        // Field yang dikirim form apa adanya
+        preg_match('/<input type="hidden" name="status" value="([^"]*)"/', $html, $m);
+        $this->assertSame('menunggu persetujuan', $m[1] ?? null, 'Form edit tidak mempertahankan status pinjaman');
+
+        $this->actingAsAdmin()->put("/products/{$p->id}", [
+            'kode' => $p->code, 'name' => 'Speaker JBL (cek)', 'status' => $m[1],
+            'location_id' => $p->location_id, 'room_id' => $p->room_id, 'cabinet_id' => $p->locker_id,
+        ])->assertSessionHasNoErrors();
+
+        $this->assertSame('menunggu persetujuan', $p->fresh()->status);
+        $this->assertSame('Speaker JBL (cek)', $p->fresh()->name);
+    }
+
+    public function test_edit_member_dengan_foto_kamera_baru_mengganti_foto(): void
+    {
+        Storage::fake();
+        $m = $this->member('3273012001990001');
+        Storage::put($m->photo, 'lama');
+
+        // members/edit mengirim hasil kamera sebagai data URI di field "photo"
+        $this->actingAsAdmin()->put("/members/{$m->id}", [
+            'name' => $m->name, 'identity_number' => $m->identity_number, 'email' => $m->email,
+            'hp' => $m->hp, 'address' => $m->address, 'info' => $m->info,
+            'photo' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+        ])->assertSessionHasNoErrors();
+
+        $baru = $m->fresh()->photo;
+        $this->assertNotSame($m->photo, $baru, 'Foto baru dari kamera diabaikan');
+        Storage::assertExists($baru);
+        Storage::assertMissing($m->photo);
+    }
+
+    public function test_edit_member_tanpa_foto_baru_mempertahankan_foto(): void
+    {
+        $m = $this->member('3273012001990001');
+        $this->actingAsAdmin()->put("/members/{$m->id}", [
+            'name' => $m->name, 'identity_number' => $m->identity_number, 'email' => $m->email,
+            'hp' => $m->hp, 'address' => $m->address, 'photo' => $m->photo,
+        ])->assertSessionHasNoErrors();
+        $this->assertSame($m->photo, $m->fresh()->photo);
+    }
+
+    public function test_form_edit_informasi_mempertahankan_kategori_yang_ada(): void
+    {
+        foreach (Post::all() as $post) {   // seeder: panduan, pengumuman, berita
+            $html = $this->actingAsAdmin()->get("/post/{$post->id}/edit")->assertOk()->getContent();
+            $this->assertMatchesRegularExpression(
+                '/<option value="' . preg_quote($post->category, '/') . '"\s+selected>/', $html,
+                "Kategori \"{$post->category}\" tidak terpilih di form edit (akan berubah diam-diam saat disimpan)"
+            );
+        }
+    }
 }
